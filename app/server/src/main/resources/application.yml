@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/aprise
+    username: postgres
+    password: test123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      default_schema: public
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
