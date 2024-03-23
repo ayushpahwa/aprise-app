@@ -27,7 +27,12 @@ export const LoginForm = ({}: Props) => {
     formState: { errors },
   } = useForm<SignInFormInput>();
   const submitHandler: SubmitHandler<SignInFormInput> = ({ email, password }) => {
-    if (!errors) console.log('Login form submitted', email, password);
+    if (errors && Object.keys(errors).length > 0) {
+      console.log('Errors found in form', errors);
+      return;
+    }
+
+    console.log('Login form submitted', email, password);
   };
   return (
     <View style={styles.form}>

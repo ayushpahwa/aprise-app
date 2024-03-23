@@ -9,7 +9,7 @@ import { LoginForm } from './LoginForm';
 
 interface Props {
   isLogin?: boolean;
-  onAuthenticate?: (token: string) => void;
+  onAuthenticate: (token: string) => void;
 }
 
 function AuthContent({ isLogin, onAuthenticate }: Props) {
