@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingVertical: 6,
     paddingHorizontal: 12,
-    backgroundColor: Colors.primary500,
+    backgroundColor: Colors.primary_trust,
     elevation: 2,
     shadowColor: 'black',
     shadowOffset: { width: 1, height: 1 },

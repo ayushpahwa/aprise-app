@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 
 import FlatButton from '../ui/FlatButton';
 import AuthForm from './AuthForm';
 import { Colors } from '../../utils/styles';
 import { useNavigation } from '@react-navigation/native';
+import { CardHandle } from 'components/ui/CardHandle';
+import { AUTH_CONTENT_SWITCH_MODE, AUTH_CONTENT_TITLE, createMessage } from 'utils/messages';
 
 interface Props {
   isLogin?: boolean;
@@ -57,9 +59,11 @@ function AuthContent({ isLogin, onAuthenticate }: Props) {
 
   return (
     <View style={styles.authContent}>
+      <CardHandle />
+      <Text style={styles.titleText}>{createMessage(AUTH_CONTENT_TITLE)}</Text>
       <AuthForm isLogin={!!isLogin} onSubmit={submitHandler} credentialsInvalid={credentialsInvalid} />
       <View style={styles.buttons}>
-        <FlatButton onPress={switchAuthModeHandler}>{isLogin ? 'Create a new user' : 'Log in instead'}</FlatButton>
+        <FlatButton onPress={switchAuthModeHandler}>{createMessage(AUTH_CONTENT_SWITCH_MODE)}</FlatButton>
       </View>
     </View>
   );
@@ -69,11 +73,11 @@ export default AuthContent;
 
 const styles = StyleSheet.create({
   authContent: {
-    marginTop: 64,
-    marginHorizontal: 32,
-    padding: 16,
+    marginTop: 'auto',
+    height: '50%',
+    padding: 32,
     borderRadius: 8,
-    backgroundColor: Colors.primary800,
+    backgroundColor: Colors.background,
     elevation: 2,
     shadowColor: 'black',
     shadowOffset: { width: 1, height: 1 },
@@ -82,5 +86,10 @@ const styles = StyleSheet.create({
   },
   buttons: {
     marginTop: 8,
+  },
+  titleText: {
+    fontSize: 24,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
