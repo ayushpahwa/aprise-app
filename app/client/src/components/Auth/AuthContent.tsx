@@ -1,12 +1,11 @@
-import { useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import FlatButton from '../ui/FlatButton';
-import AuthForm from './AuthForm';
 import { Colors } from '../../utils/styles';
 import { useNavigation } from '@react-navigation/native';
 import { CardHandle } from 'components/ui/CardHandle';
 import { AUTH_CONTENT_SWITCH_MODE, AUTH_CONTENT_TITLE, createMessage } from 'utils/messages';
+import { LoginForm } from './LoginForm';
 
 interface Props {
   isLogin?: boolean;
@@ -16,13 +15,6 @@ interface Props {
 function AuthContent({ isLogin, onAuthenticate }: Props) {
   const { replace } = useNavigation<any>();
 
-  const [credentialsInvalid, setCredentialsInvalid] = useState({
-    email: false,
-    password: false,
-    confirmEmail: false,
-    confirmPassword: false,
-  });
-
   function switchAuthModeHandler() {
     if (isLogin) {
       replace('Signup', { replace: true });
@@ -31,39 +23,13 @@ function AuthContent({ isLogin, onAuthenticate }: Props) {
     }
   }
 
-  function submitHandler(credentials: { email: string; confirmEmail: string; password: string; confirmPassword: string }) {
-    if (!onAuthenticate) return;
-
-    let { email, confirmEmail, password, confirmPassword } = credentials;
-
-    email = email.trim();
-    password = password.trim();
-
-    const emailIsValid = email.includes('@');
-    const passwordIsValid = password.length > 6;
-    const emailsAreEqual = email === confirmEmail;
-    const passwordsAreEqual = password === confirmPassword;
-
-    if (!emailIsValid || !passwordIsValid || (!isLogin && (!emailsAreEqual || !passwordsAreEqual))) {
-      Alert.alert('Invalid input', 'Please check your entered credentials.');
-      setCredentialsInvalid({
-        email: !emailIsValid,
-        confirmEmail: !emailIsValid || !emailsAreEqual,
-        password: !passwordIsValid,
-        confirmPassword: !passwordIsValid || !passwordsAreEqual,
-      });
-      return;
-    }
-    onAuthenticate({ email, password });
-  }
-
   return (
     <View style={styles.authContent}>
       <CardHandle />
-      <Text style={styles.titleText}>{createMessage(AUTH_CONTENT_TITLE)}</Text>
-      <AuthForm isLogin={!!isLogin} onSubmit={submitHandler} credentialsInvalid={credentialsInvalid} />
+      <Text style={styles.titleText}>{createMessage(() => AUTH_CONTENT_TITLE(isLogin))}</Text>
+      <LoginForm />
       <View style={styles.buttons}>
-        <FlatButton onPress={switchAuthModeHandler}>{createMessage(AUTH_CONTENT_SWITCH_MODE)}</FlatButton>
+        <FlatButton onPress={switchAuthModeHandler}>{createMessage(() => AUTH_CONTENT_SWITCH_MODE(isLogin))}</FlatButton>
       </View>
     </View>
   );
