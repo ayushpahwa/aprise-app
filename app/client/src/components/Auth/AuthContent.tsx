@@ -9,7 +9,7 @@ import { LoginForm } from './LoginForm';
 
 interface Props {
   isLogin?: boolean;
-  onAuthenticate?: (credentials: { email: string; password: string }) => void;
+  onAuthenticate?: (token: string) => void;
 }
 
 function AuthContent({ isLogin, onAuthenticate }: Props) {
@@ -27,7 +27,7 @@ function AuthContent({ isLogin, onAuthenticate }: Props) {
     <View style={styles.authContent}>
       <CardHandle />
       <Text style={styles.titleText}>{createMessage(() => AUTH_CONTENT_TITLE(isLogin))}</Text>
-      <LoginForm />
+      <LoginForm onAuthenticate={onAuthenticate} />
       <View style={styles.buttons}>
         <FlatButton onPress={switchAuthModeHandler}>{createMessage(() => AUTH_CONTENT_SWITCH_MODE(isLogin))}</FlatButton>
       </View>

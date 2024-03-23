@@ -17,23 +17,17 @@ const enum LoginFormFields {
 }
 
 interface Props {
-  onSubmit: (credentials: { email: string; confirmEmail: string; password: string; confirmPassword: string }) => void;
+  onAuthenticate: (token: string) => void;
 }
 
-export const LoginForm = ({ onSubmit }: Props) => {
+export const LoginForm = ({}: Props) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<SignInFormInput>();
   const submitHandler: SubmitHandler<SignInFormInput> = ({ email, password }) => {
-    if (!errors)
-      onSubmit({
-        email,
-        confirmEmail: '',
-        password,
-        confirmPassword: '',
-      });
+    if (!errors) console.log('Login form submitted', email, password);
   };
   return (
     <View style={styles.form}>
