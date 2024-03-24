@@ -30,6 +30,12 @@
       "@utils/*": [
         "src/utils/*"
       ],
+      "@api/*": [
+        "src/api/*"
+      ],
+      "@store/*": [
+        "src/store/*"
+      ],
     },
   },
   "exclude": [
