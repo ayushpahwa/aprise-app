@@ -1,6 +1,6 @@
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
-import { Colors } from '../../utils/styles';
+import { Colors } from '../../constants/styles';
 
 interface Props {
   label: string;

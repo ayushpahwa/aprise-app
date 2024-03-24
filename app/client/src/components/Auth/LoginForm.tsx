@@ -1,10 +1,18 @@
-import Button from 'components/ui/Button';
+import { useMutation } from '@tanstack/react-query';
 import { CustomButton } from 'components/ui/CustomButton';
 import CustomTextInput from 'components/ui/CustomTextInput';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { StyleSheet, View } from 'react-native';
-import { emailValidationConfig, passwordValidationConfig } from 'utils/formValidationConfigs';
-import { AUTH_FORM_EMAIL_LABEL, AUTH_FORM_LOGIN_CTA_LABEL, AUTH_FORM_PASSWORD_LABEL, createMessage } from 'utils/messages';
+import { Alert, StyleSheet, View } from 'react-native';
+import { emailValidationConfig, passwordValidationConfig } from 'constants/formValidationConfigs';
+import {
+  AUTH_ALERT_LOGIN_ERROR_MESSAGE,
+  AUTH_ALERT_LOGIN_ERROR_TITLE,
+  AUTH_FORM_EMAIL_LABEL,
+  AUTH_FORM_LOGIN_CTA_LABEL,
+  AUTH_FORM_PASSWORD_LABEL,
+  createMessage,
+} from 'constants/messages';
+import AuthApi, { LoginDTO } from 'api/AuthAPI';
 
 export interface SignInFormInput {
   email: string;
@@ -20,19 +28,27 @@ interface Props {
   onAuthenticate: (token: string) => void;
 }
 
-export const LoginForm = ({}: Props) => {
+export const LoginForm = ({ onAuthenticate }: Props) => {
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<SignInFormInput>();
-  const submitHandler: SubmitHandler<SignInFormInput> = ({ email, password }) => {
-    if (errors && Object.keys(errors).length > 0) {
-      console.log('Errors found in form', errors);
-      return;
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async (payload: LoginDTO) => {
+      return await AuthApi.login(payload);
+    },
+    onSuccess: (data) => {
+      onAuthenticate(data.data.token);
+    },
+  });
+  const submitHandler: SubmitHandler<SignInFormInput> = async ({ email, password }) => {
+    try {
+      if (errors && Object.keys(errors).length > 0) return;
+      await mutateAsync({ email, password });
+    } catch (error: any) {
+      Alert.alert(createMessage(AUTH_ALERT_LOGIN_ERROR_TITLE), createMessage(AUTH_ALERT_LOGIN_ERROR_MESSAGE));
     }
-
-    console.log('Login form submitted', email, password);
   };
   return (
     <View style={styles.form}>
@@ -54,8 +70,8 @@ export const LoginForm = ({}: Props) => {
         onPress={handleSubmit(submitHandler)}
         title={createMessage(AUTH_FORM_LOGIN_CTA_LABEL)}
         style={styles.buttons}
-        loading={false}
-        disabled={false}
+        loading={isPending}
+        disabled={isPending}
       />
     </View>
   );
