@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native';
-import { Colors } from 'utils/styles';
+import { Colors } from 'constants/styles';
 
 export const CardHandle = () => {
   return <View style={styles.cardHandle} />;

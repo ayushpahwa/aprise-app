@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPES } from 'utils/constants';
+import { TRANSACTION_TYPES } from 'constants/txnConstants';
 import { Transaction } from './TransactionsContext';
 
 export const dummyTxnData = () => {

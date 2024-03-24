@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { Colors } from '../../utils/styles';
+import { Colors } from '../../constants/styles';
 
 interface Props {
   children: string;

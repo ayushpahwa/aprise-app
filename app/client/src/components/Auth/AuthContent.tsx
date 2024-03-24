@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import FlatButton from '../ui/FlatButton';
-import { Colors } from '../../utils/styles';
+import { Colors } from '../../constants/styles';
 import { useNavigation } from '@react-navigation/native';
 import { CardHandle } from 'components/ui/CardHandle';
-import { AUTH_CONTENT_SWITCH_MODE, AUTH_CONTENT_TITLE, createMessage } from 'utils/messages';
+import { AUTH_CONTENT_SWITCH_MODE, AUTH_CONTENT_TITLE, createMessage } from 'constants/messages';
 import { LoginForm } from './LoginForm';
 
 interface Props {

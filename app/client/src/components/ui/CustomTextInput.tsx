@@ -1,9 +1,9 @@
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
-import { Colors } from '../../utils/styles';
+import { Colors } from '../../constants/styles';
 import { Control, Controller, FieldPath, RegisterOptions } from 'react-hook-form';
 import { SignInFormInput } from 'components/Auth/LoginForm';
-import { VALIDATION_INVALID_INPUT, createMessage } from 'utils/messages';
+import { VALIDATION_INVALID_INPUT, createMessage } from 'constants/messages';
 
 type FieldName = FieldPath<SignInFormInput>;
 

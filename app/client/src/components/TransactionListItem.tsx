@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Transaction, TransactionContext } from 'store/TransactionsContext';
-import { TRANSACTION_TYPES } from 'utils/constants';
+import { TRANSACTION_TYPES } from 'constants/txnConstants';
 import { MaterialIcons as Icon } from '@expo/vector-icons';
 import moment from 'moment';
 

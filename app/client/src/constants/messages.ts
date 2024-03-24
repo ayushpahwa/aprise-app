@@ -2,6 +2,13 @@ export function createMessage(format: (...strArgs: any[]) => string, ...args: an
   return format(...args);
 }
 
+export const ERROR_401 = () => `We are unable to verify your identity. Please login again.`;
+export const ERROR_413 = (maxFileSize: number) => `Payload too large. File size cannot exceed ${maxFileSize}MB.`;
+export const ERROR_403 = (entity: string, userEmail: string) =>
+  `Sorry, but your account (${userEmail}) does not seem to have the required access to update this ${entity}. Please get in touch with your aprise admin to resolve this.`;
+export const ERROR_500 = () => `We apologize, something went wrong. We're trying to fix things.`;
+export const SERVER_API_TIMEOUT_ERROR = () => `Aprise server is taking too long to respond. Please try again after some time`;
+
 export const AUTH_CONTENT_TITLE = (isLoginMode?: boolean) => (!!isLoginMode ? 'Log in' : 'Sign up');
 export const AUTH_CONTENT_SWITCH_MODE = (isLoginMode?: boolean) => (!!isLoginMode ? 'Create a new user' : 'Log in instead');
 export const AUTH_FORM_EMAIL_LABEL = () => 'Email Address';
@@ -10,6 +17,8 @@ export const AUTH_FORM_PASSWORD_LABEL = () => 'Password';
 export const AUTH_FORM_CONFIRM_PASSWORD_LABEL = () => 'Confirm Password';
 export const AUTH_FORM_LOGIN_CTA_LABEL = () => 'Log in';
 export const AUTH_FORM_SIGNUP_CTA_LABEL = () => 'Sign up';
+export const AUTH_ALERT_LOGIN_ERROR_TITLE = () => 'Login Error';
+export const AUTH_ALERT_LOGIN_ERROR_MESSAGE = () => 'Invalid credentials, please check your credentials and try again.';
 
 // Validation error messages
 export const VALIDATION_EMAIL_REQUIRED = () => 'Email is required';
