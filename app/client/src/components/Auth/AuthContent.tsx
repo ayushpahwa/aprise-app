@@ -1,19 +1,23 @@
 import { StyleSheet, Text, View } from 'react-native';
-
-import FlatButton from '../ui/FlatButton';
 import { Colors } from '../../constants/styles';
 import { useNavigation } from '@react-navigation/native';
 import { CardHandle } from 'components/ui/CardHandle';
 import { AUTH_CONTENT_SWITCH_MODE, AUTH_CONTENT_TITLE, createMessage } from 'constants/messages';
 import { LoginForm } from './LoginForm';
-
+import { RegisterForm } from './RegisterForm';
+import { Button } from '@ui-kitten/components';
+import { storeDataToLocalStore, LocalStoreKeys } from 'store/localStore';
 interface Props {
   isLogin?: boolean;
-  onAuthenticate: (token: string) => void;
 }
 
-function AuthContent({ isLogin, onAuthenticate }: Props) {
+function AuthContent({ isLogin }: Props) {
   const { replace } = useNavigation<any>();
+
+  async function onAuthenticate(token: string) {
+    // store token in local storage
+    storeDataToLocalStore(LocalStoreKeys.AUTH_TOKEN, token);
+  }
 
   function switchAuthModeHandler() {
     if (isLogin) {
@@ -24,13 +28,14 @@ function AuthContent({ isLogin, onAuthenticate }: Props) {
   }
 
   return (
-    <View style={styles.authContent}>
+    <View style={[styles.authContent, isLogin && styles.loginContent]}>
       <CardHandle />
       <Text style={styles.titleText}>{createMessage(() => AUTH_CONTENT_TITLE(isLogin))}</Text>
-      <LoginForm onAuthenticate={onAuthenticate} />
-      <View style={styles.buttons}>
-        <FlatButton onPress={switchAuthModeHandler}>{createMessage(() => AUTH_CONTENT_SWITCH_MODE(isLogin))}</FlatButton>
-      </View>
+      {isLogin && <LoginForm onAuthenticate={onAuthenticate} />}
+      {!isLogin && <RegisterForm onAuthenticate={onAuthenticate} />}
+      <Button appearance="ghost" onPress={switchAuthModeHandler}>
+        {createMessage(() => AUTH_CONTENT_SWITCH_MODE(isLogin))}
+      </Button>
     </View>
   );
 }
@@ -40,7 +45,7 @@ export default AuthContent;
 const styles = StyleSheet.create({
   authContent: {
     marginTop: 'auto',
-    height: '50%',
+    height: '70%',
     padding: 32,
     borderRadius: 8,
     backgroundColor: Colors.background,
@@ -49,6 +54,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.35,
     shadowRadius: 4,
+  },
+  loginContent: {
+    height: '50%',
   },
   buttons: {
     marginTop: 8,
