@@ -22,5 +22,5 @@ public class RegisterRequestDTO {
     @NotBlank(message = "name can't be blank")
     private String fullName;
     @Range(min = 1, message = "default currency can not be empty")
-    private int default_currency_id;
+    private int defaultCurrencyId;
 }
