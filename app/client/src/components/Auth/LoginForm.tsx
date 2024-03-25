@@ -54,6 +54,7 @@ export const LoginForm = ({ onAuthenticate }: Props) => {
   return (
     <View style={styles.form}>
       <CustomTextInput
+        autoComplete="email"
         name={LoginFormFields.email}
         label={createMessage(AUTH_FORM_EMAIL_LABEL)}
         keyboardType="email-address"

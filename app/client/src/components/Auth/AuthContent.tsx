@@ -1,20 +1,19 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '../../constants/styles';
-import { useNavigation } from '@react-navigation/native';
 import { CardHandle } from 'components/ui/CardHandle';
 import { AUTH_CONTENT_SWITCH_MODE, AUTH_CONTENT_TITLE, createMessage } from 'constants/messages';
 import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';
 import { Button } from '@ui-kitten/components';
-import { storeDataToLocalStore, LocalStoreKeys } from 'store/localStore';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AuthContext } from 'store/AuthContext';
 
 function AuthContent() {
+  const { setToken } = useContext(AuthContext);
   const [isLogin, setIsLogin] = useState(true);
 
   async function onAuthenticate(token: string) {
-    // store token in local storage
-    storeDataToLocalStore(LocalStoreKeys.AUTH_TOKEN, token);
+    setToken(token);
   }
 
   function switchAuthModeHandler() {
@@ -26,7 +25,7 @@ function AuthContent() {
   }
 
   return (
-    <View style={[styles.authContent, isLogin && styles.loginContent]}>
+    <View style={styles.authContent}>
       <CardHandle />
       <Text style={styles.titleText}>{createMessage(() => AUTH_CONTENT_TITLE(isLogin))}</Text>
       {isLogin && <LoginForm onAuthenticate={onAuthenticate} />}
@@ -43,7 +42,7 @@ export default AuthContent;
 const styles = StyleSheet.create({
   authContent: {
     marginTop: 'auto',
-    height: '70%',
+    height: 'auto',
     padding: 32,
     borderRadius: 8,
     backgroundColor: Colors.background,
@@ -52,9 +51,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.35,
     shadowRadius: 4,
-  },
-  loginContent: {
-    height: '50%',
   },
   buttons: {
     marginTop: 8,

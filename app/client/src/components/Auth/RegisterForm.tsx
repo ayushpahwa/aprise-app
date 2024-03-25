@@ -65,12 +65,15 @@ export const RegisterForm = ({ onAuthenticate }: Props) => {
   return (
     <View style={styles.form}>
       <CustomTextInput
+        autoCapitalize="words"
+        autoComplete="name"
         name={RegisterFormFields.fullName}
         label={createMessage(AUTH_FORM_FULLNAME_LABEL)}
         control={control}
         validationRules={fullNameValidationConfig}
       />
       <CustomTextInput
+        autoComplete="email"
         name={RegisterFormFields.email}
         label={createMessage(AUTH_FORM_EMAIL_LABEL)}
         keyboardType="email-address"
