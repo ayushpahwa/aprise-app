@@ -7,12 +7,10 @@ import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';
 import { Button } from '@ui-kitten/components';
 import { storeDataToLocalStore, LocalStoreKeys } from 'store/localStore';
-interface Props {
-  isLogin?: boolean;
-}
+import { useState } from 'react';
 
-function AuthContent({ isLogin }: Props) {
-  const { replace } = useNavigation<any>();
+function AuthContent() {
+  const [isLogin, setIsLogin] = useState(true);
 
   async function onAuthenticate(token: string) {
     // store token in local storage
@@ -21,9 +19,9 @@ function AuthContent({ isLogin }: Props) {
 
   function switchAuthModeHandler() {
     if (isLogin) {
-      replace('Signup', { replace: true });
+      setIsLogin(false);
     } else {
-      replace('Login', { replace: true });
+      setIsLogin(true);
     }
   }
 
