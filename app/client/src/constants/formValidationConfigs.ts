@@ -1,4 +1,11 @@
-import { VALIDATION_EMAIL_INVALID, VALIDATION_EMAIL_REQUIRED, VALIDATION_PASSWORD_MIN_LENGTH, VALIDATION_PASSWORD_REQUIRED, createMessage } from './messages';
+import {
+  VALIDATION_EMAIL_INVALID,
+  VALIDATION_EMAIL_REQUIRED,
+  VALIDATION_FULLNAME_REQUIRED,
+  VALIDATION_PASSWORD_MIN_LENGTH,
+  VALIDATION_PASSWORD_REQUIRED,
+  createMessage,
+} from './messages';
 
 export const emailValidationConfig = {
   required: createMessage(VALIDATION_EMAIL_REQUIRED),
@@ -14,4 +21,8 @@ export const passwordValidationConfig = {
     value: 6,
     message: createMessage(VALIDATION_PASSWORD_MIN_LENGTH),
   },
+};
+
+export const fullNameValidationConfig = {
+  required: createMessage(VALIDATION_FULLNAME_REQUIRED),
 };
