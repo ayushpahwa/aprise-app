@@ -14,9 +14,9 @@ export const storeDataToLocalStore = async (key: LocalStoreKeys, value: string |
   }
 };
 
-export const getDataFromLocalStore = async () => {
+export const getDataFromLocalStore = async (key: LocalStoreKeys) => {
   try {
-    const value = await AsyncStorage.getItem('my-key');
+    const value = await AsyncStorage.getItem(key);
     if (value !== null) {
       // check if value is an object
       try {
@@ -25,8 +25,19 @@ export const getDataFromLocalStore = async () => {
         return value;
       }
     }
+    return null;
   } catch (e) {
     // error reading value
     console.log('Error reading data:', e);
+    return null;
+  }
+};
+
+export const removeDataFromLocalStore = async (key: LocalStoreKeys) => {
+  try {
+    await AsyncStorage.removeItem(key);
+  } catch (e) {
+    // error reading value
+    console.log('Error removing data:', e);
   }
 };
