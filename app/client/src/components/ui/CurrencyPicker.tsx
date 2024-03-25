@@ -13,7 +13,7 @@ interface Props {
   validationRules?: Omit<RegisterOptions<any, FieldName>, 'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'>; // Prop used by react-hook-form to define validation rules
 }
 
-const DEFAULT_CURRENCY_INDEX = 38; // INR
+const DEFAULT_CURRENCY_INDEX = process.env.EXPO_PUBLIC_DEFAULT_CURRENCY_INDEX || 38; // INR
 
 const getRowDescriptor = (currency: any): string => `${currency.symbol} - ${currency.name}`;
 
@@ -24,19 +24,16 @@ export const CurrencyPicker = ({ control, name, validationRules, label }: Props)
       name={name}
       rules={validationRules}
       defaultValue={DEFAULT_CURRENCY_INDEX}
-      render={({ field: { value, onChange } }) => {
-        console.log(value);
-        return (
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>{label}</Text>
-            <Select size="large" onSelect={(index) => onChange((index as IndexPath).row)} value={`${getRowDescriptor(CURRENCIES[value])}`}>
-              {CURRENCIES.map((currency) => (
-                <SelectItem key={currency.id} title={`${getRowDescriptor(currency)}`} />
-              ))}
-            </Select>
-          </View>
-        );
-      }}
+      render={({ field: { value, onChange } }) => (
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>{label}</Text>
+          <Select size="large" onSelect={(index) => onChange((index as IndexPath).row)} value={`${getRowDescriptor(CURRENCIES[value])}`}>
+            {CURRENCIES.map((currency) => (
+              <SelectItem key={currency.id} title={`${getRowDescriptor(currency)}`} />
+            ))}
+          </Select>
+        </View>
+      )}
     />
   );
 };

@@ -5,15 +5,13 @@ import { apiFailureResponseInterceptor, apiRequestInterceptor, apiSuccessRespons
 import { convertObjectToQueryParams } from '../utils/URLUtils';
 
 export const apiRequestConfig = {
-  baseURL: process.env.EXPO_PUBLIC_API_BASE_URL,
+  baseURL: process.env.EXPO_PUBLIC_API_BASE_URL || '',
   timeout: REQUEST_TIMEOUT_MS,
   headers: {
     'Content-Type': 'application/json',
   },
   withCredentials: true,
 };
-
-console.log('EXPO_PUBLIC_API_BASE_URL:', process.env.EXPO_PUBLIC_API_BASE_URL);
 
 const axiosInstance: AxiosInstance = axios.create();
 
