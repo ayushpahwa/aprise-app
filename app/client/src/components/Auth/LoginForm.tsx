@@ -1,5 +1,4 @@
 import { useMutation } from '@tanstack/react-query';
-import { CustomButton } from 'components/ui/CustomButton';
 import CustomTextInput from 'components/ui/CustomTextInput';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Alert, StyleSheet, View } from 'react-native';
@@ -13,6 +12,8 @@ import {
   createMessage,
 } from 'constants/messages';
 import AuthApi, { LoginDTO } from 'api/AuthAPI';
+import { Button, Spinner } from '@ui-kitten/components';
+import { LoadingIndicator } from 'components/ui/LoadingIndicator';
 
 export interface SignInFormInput {
   email: string;
@@ -66,13 +67,12 @@ export const LoginForm = ({ onAuthenticate }: Props) => {
         control={control}
         validationRules={passwordValidationConfig}
       />
-      <CustomButton
-        onPress={handleSubmit(submitHandler)}
-        title={createMessage(AUTH_FORM_LOGIN_CTA_LABEL)}
-        style={styles.buttons}
-        loading={isPending}
-        disabled={isPending}
-      />
+      {isPending && <LoadingIndicator style={styles.loadingIndicator} />}
+      {!isPending && (
+        <Button onPress={handleSubmit(submitHandler)} style={styles.buttons} disabled={isPending} status="primary">
+          {createMessage(AUTH_FORM_LOGIN_CTA_LABEL)}
+        </Button>
+      )}
     </View>
   );
 };
@@ -83,5 +83,8 @@ const styles = StyleSheet.create({
   },
   form: {
     marginVertical: 8,
+  },
+  loadingIndicator: {
+    marginTop: 12,
   },
 });
