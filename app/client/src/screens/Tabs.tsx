@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -19,40 +19,42 @@ export const Tabs = () => {
     <>
       <TransactionModal />
 
-      <Navigator>
-        <Screen
-          name="Home"
-          component={Home}
-          options={{
-            title: 'Home',
-            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home" size={24} color={color} />,
-          }}
-        />
-        {/* Add tab which doesn't open a screen, just opens a modal */}
-        <Screen
-          name="Add"
-          component={DummyComponentForModalTab}
-          options={{
-            title: 'Add',
-            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="plus" size={24} color={color} />,
-          }}
-          listeners={() => ({
-            tabPress: (e) => {
-              e.preventDefault();
-              // Open the modal
-              ui.openModal();
-            },
-          })}
-        />
-        <Screen
-          name="AllExpenses"
-          component={Details}
-          options={{
-            title: 'All Expenses',
-            tabBarIcon: ({ color }) => <MaterialCommunityIcons name="format-list-bulleted" size={24} color={color} />,
-          }}
-        />
-      </Navigator>
+      <TransactionContextProvider>
+        <Navigator>
+          <Screen
+            name="Home"
+            component={Home}
+            options={{
+              title: 'Home',
+              tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home" size={24} color={color} />,
+            }}
+          />
+          {/* Add tab which doesn't open a screen, just opens a modal */}
+          <Screen
+            name="Add"
+            component={DummyComponentForModalTab}
+            options={{
+              title: 'Add',
+              tabBarIcon: ({ color }) => <MaterialCommunityIcons name="plus" size={24} color={color} />,
+            }}
+            listeners={() => ({
+              tabPress: (e) => {
+                e.preventDefault();
+                // Open the modal
+                ui.openModal();
+              },
+            })}
+          />
+          <Screen
+            name="AllExpenses"
+            component={Details}
+            options={{
+              title: 'All Expenses',
+              tabBarIcon: ({ color }) => <MaterialCommunityIcons name="format-list-bulleted" size={24} color={color} />,
+            }}
+          />
+        </Navigator>
+      </TransactionContextProvider>
     </>
   );
 };
