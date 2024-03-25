@@ -40,7 +40,6 @@ CREATE SEQUENCE currencies_seq;
 CREATE SEQUENCE accounts_seq;
 CREATE SEQUENCE groups_seq;
 CREATE SEQUENCE group_members_seq;
-CREATE SEQUENCE user_accounts_seq;
 CREATE SEQUENCE group_currencies_seq;
 CREATE SEQUENCE categories_seq;
 CREATE SEQUENCE transactions_seq;
@@ -67,11 +66,12 @@ CREATE TABLE "currencies" (
 
 CREATE TABLE "accounts" (
   "id" INT DEFAULT nextval('accounts_seq') PRIMARY KEY,
+  "owner_id" bigint,
   "name" varchar,
   "type" account_types,
   "currency_id" int,
-  "current_balance" int,
-  "starting_balance" int,
+  "current_balance" float,
+  "starting_balance" float,
   "is_deleted" boolean DEFAULT false,
   "created_at" timestamp,
   "deleted_at" timestamp
@@ -92,16 +92,6 @@ CREATE TABLE "group_members" (
   "group_id" bigint,
   "member_id" bigint,
   "is_owner" boolean DEFAULT false,
-  "is_default" boolean DEFAULT false,
-  "is_deleted" boolean DEFAULT false,
-  "created_at" timestamp,
-  "deleted_at" timestamp
-);
-
-CREATE TABLE "user_accounts" (
-  "id" INT DEFAULT nextval('user_accounts_seq') PRIMARY KEY,
-  "account_id" int,
-  "user_id" int,
   "is_default" boolean DEFAULT false,
   "is_deleted" boolean DEFAULT false,
   "created_at" timestamp,
@@ -142,17 +132,17 @@ CREATE TABLE "transactions" (
 );
 
 CREATE TABLE "transaction_tags" (
-  "id" INT DEFAULT nextval('transaction_tags_seq') PRIMARY KEY,
-  "transaction_id" int,
+  "id" BIGINT DEFAULT nextval('transaction_tags_seq') PRIMARY KEY,
+  "transaction_id" bigint,
   "name" varchar,
   "created_at" timestamp
 );
 
 CREATE TABLE "transaction_members" (
-  "id" INT DEFAULT nextval('transaction_members_seq') PRIMARY KEY,
-  "transaction_id" int,
-  "member_id" int,
-  "member_account_id" int,
+  "id" BIGINT DEFAULT nextval('transaction_members_seq') PRIMARY KEY,
+  "transaction_id" bigint,
+  "member_id" bigint,
+  "member_account_id" bigint,
   "contribution" transaction_contribution_type,
   "amount" float,
   "is_deleted" boolean DEFAULT false,
@@ -167,8 +157,6 @@ CREATE INDEX ON "accounts" ("type", "is_deleted");
 CREATE INDEX ON "groups" ("type", "is_deleted");
 
 CREATE INDEX ON "group_members" ("group_id", "is_deleted");
-
-CREATE INDEX ON "user_accounts" ("account_id", "user_id", "is_deleted");
 
 CREATE INDEX ON "group_currencies" ("currency_id", "group_id", "is_deleted");
 
@@ -245,20 +233,6 @@ COMMENT ON COLUMN "group_members"."is_deleted" IS 'Flag for soft deletion';
 COMMENT ON COLUMN "group_members"."created_at" IS 'Timestamp when the member was added to the group';
 
 COMMENT ON COLUMN "group_members"."deleted_at" IS 'Timestamp for soft deletion, null if not deleted';
-
-COMMENT ON COLUMN "user_accounts"."id" IS 'Unique identifier for each user-account association';
-
-COMMENT ON COLUMN "user_accounts"."account_id" IS 'Associated account ID';
-
-COMMENT ON COLUMN "user_accounts"."user_id" IS 'Associated user ID';
-
-COMMENT ON COLUMN "user_accounts"."is_default" IS 'Indicates if this is the default account for the user';
-
-COMMENT ON COLUMN "user_accounts"."is_deleted" IS 'Flag for soft deletion';
-
-COMMENT ON COLUMN "user_accounts"."created_at" IS 'Timestamp when the association was created';
-
-COMMENT ON COLUMN "user_accounts"."deleted_at" IS 'Timestamp for soft deletion, null if not deleted';
 
 COMMENT ON COLUMN "group_currencies"."id" IS 'Unique identifier for each user-currency association';
 
