@@ -1,66 +1,38 @@
-import { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Colors } from '../../constants/styles';
+import { CardHandle } from 'components/ui/CardHandle';
+import { AUTH_CONTENT_SWITCH_MODE, AUTH_CONTENT_TITLE, createMessage } from 'constants/messages';
+import { LoginForm } from './LoginForm';
+import { RegisterForm } from './RegisterForm';
+import { Button } from '@ui-kitten/components';
+import { useContext, useState } from 'react';
+import { AuthContext } from 'store/AuthContext';
 
-import FlatButton from '../ui/FlatButton';
-import AuthForm from './AuthForm';
-import { Colors } from '../../utils/styles';
-import { useNavigation } from '@react-navigation/native';
+function AuthContent() {
+  const { setToken } = useContext(AuthContext);
+  const [isLogin, setIsLogin] = useState(true);
 
-interface Props {
-  isLogin?: boolean;
-  onAuthenticate?: (credentials: { email: string; password: string }) => void;
-}
-
-function AuthContent({ isLogin, onAuthenticate }: Props) {
-  const { replace } = useNavigation<any>();
-
-  const [credentialsInvalid, setCredentialsInvalid] = useState({
-    email: false,
-    password: false,
-    confirmEmail: false,
-    confirmPassword: false,
-  });
+  async function onAuthenticate(token: string) {
+    setToken(token);
+  }
 
   function switchAuthModeHandler() {
     if (isLogin) {
-      replace('Signup', { replace: true });
+      setIsLogin(false);
     } else {
-      replace('Login', { replace: true });
+      setIsLogin(true);
     }
-  }
-
-  function submitHandler(credentials: { email: string; confirmEmail: string; password: string; confirmPassword: string }) {
-    if (!onAuthenticate) return;
-
-    let { email, confirmEmail, password, confirmPassword } = credentials;
-
-    email = email.trim();
-    password = password.trim();
-
-    const emailIsValid = email.includes('@');
-    const passwordIsValid = password.length > 6;
-    const emailsAreEqual = email === confirmEmail;
-    const passwordsAreEqual = password === confirmPassword;
-
-    if (!emailIsValid || !passwordIsValid || (!isLogin && (!emailsAreEqual || !passwordsAreEqual))) {
-      Alert.alert('Invalid input', 'Please check your entered credentials.');
-      setCredentialsInvalid({
-        email: !emailIsValid,
-        confirmEmail: !emailIsValid || !emailsAreEqual,
-        password: !passwordIsValid,
-        confirmPassword: !passwordIsValid || !passwordsAreEqual,
-      });
-      return;
-    }
-    onAuthenticate({ email, password });
   }
 
   return (
     <View style={styles.authContent}>
-      <AuthForm isLogin={!!isLogin} onSubmit={submitHandler} credentialsInvalid={credentialsInvalid} />
-      <View style={styles.buttons}>
-        <FlatButton onPress={switchAuthModeHandler}>{isLogin ? 'Create a new user' : 'Log in instead'}</FlatButton>
-      </View>
+      <CardHandle />
+      <Text style={styles.titleText}>{createMessage(() => AUTH_CONTENT_TITLE(isLogin))}</Text>
+      {isLogin && <LoginForm onAuthenticate={onAuthenticate} />}
+      {!isLogin && <RegisterForm onAuthenticate={onAuthenticate} />}
+      <Button appearance="ghost" onPress={switchAuthModeHandler}>
+        {createMessage(() => AUTH_CONTENT_SWITCH_MODE(isLogin))}
+      </Button>
     </View>
   );
 }
@@ -69,11 +41,11 @@ export default AuthContent;
 
 const styles = StyleSheet.create({
   authContent: {
-    marginTop: 64,
-    marginHorizontal: 32,
-    padding: 16,
+    marginTop: 'auto',
+    height: 'auto',
+    padding: 32,
     borderRadius: 8,
-    backgroundColor: Colors.primary800,
+    backgroundColor: Colors.background,
     elevation: 2,
     shadowColor: 'black',
     shadowOffset: { width: 1, height: 1 },
@@ -82,5 +54,10 @@ const styles = StyleSheet.create({
   },
   buttons: {
     marginTop: 8,
+  },
+  titleText: {
+    fontSize: 24,
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });

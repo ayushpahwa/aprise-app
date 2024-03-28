@@ -35,7 +35,7 @@ public class AuthService {
     @Transactional
     public AuthResponseDTO register(RegisterRequestDTO request) {
         // Get currency from request
-        var currency_id = request.getDefault_currency_id();
+        var currency_id = request.getDefaultCurrencyId();
         var currency = currenciesRepository.findById(currency_id).orElseThrow(() -> new ApriseException(GlobalError.INVALID_CURRENCY));
 
         // Build user object

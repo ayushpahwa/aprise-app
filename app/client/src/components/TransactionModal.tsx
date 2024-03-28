@@ -2,7 +2,7 @@ import SegmentedControl from '@react-native-segmented-control/segmented-control'
 import { useContext, useMemo, useState } from 'react';
 import { View, Text, Modal, Button, StyleSheet, TextInput } from 'react-native';
 import { Transaction, TransactionContext } from 'store/TransactionsContext';
-import { TRANSACTION_TYPES } from 'utils/constants';
+import { TRANSACTION_TYPES } from 'constants/txnConstants';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { TransactionAmountInput } from './TransactionAmountInput';
 

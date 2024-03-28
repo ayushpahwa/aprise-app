@@ -1,5 +1,5 @@
 import { StyleSheet, TextInput } from 'react-native';
-import { TRANSACTION_TYPES } from 'utils/constants';
+import { TRANSACTION_TYPES } from 'constants/txnConstants';
 
 interface Props {
   amount: string;
