@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 export enum LocalStoreKeys {
   AUTH_TOKEN = 'AUTH_TOKEN',
@@ -7,7 +7,7 @@ export enum LocalStoreKeys {
 export const storeDataToLocalStore = async (key: LocalStoreKeys, value: string | object) => {
   try {
     if (typeof value === 'object') value = JSON.stringify(value);
-    await AsyncStorage.setItem(key, value);
+    await SecureStore.setItemAsync(key, value);
   } catch (e) {
     // saving error
     console.log('Error saving data:', e);
@@ -16,7 +16,7 @@ export const storeDataToLocalStore = async (key: LocalStoreKeys, value: string |
 
 export const getDataFromLocalStore = async (key: LocalStoreKeys) => {
   try {
-    const value = await AsyncStorage.getItem(key);
+    const value = await SecureStore.getItemAsync(key);
     if (value !== null) {
       // check if value is an object
       try {
@@ -35,7 +35,7 @@ export const getDataFromLocalStore = async (key: LocalStoreKeys) => {
 
 export const removeDataFromLocalStore = async (key: LocalStoreKeys) => {
   try {
-    await AsyncStorage.removeItem(key);
+    await SecureStore.deleteItemAsync(key);
   } catch (e) {
     // error reading value
     console.log('Error removing data:', e);
