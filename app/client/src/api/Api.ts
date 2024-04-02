@@ -23,6 +23,9 @@ requestInterceptors.forEach((interceptor) => {
 axiosInstance.interceptors.response.use(apiSuccessResponseInterceptor, apiFailureResponseInterceptor);
 
 class Api {
+  static async updateAuthHeaders(token: string) {
+    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
   static async get(url: string, queryParams?: any, config: AxiosRequestConfig = {}) {
     return axiosInstance.get(url + convertObjectToQueryParams(queryParams), {
       ...apiRequestConfig,

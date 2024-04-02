@@ -1,5 +1,6 @@
 import { createContext, useState } from 'react';
 import { storeDataToLocalStore, LocalStoreKeys, removeDataFromLocalStore } from './localStore';
+import Api from 'api/Api';
 
 export interface AuthContextType {
   token: string;
@@ -21,6 +22,9 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
 
   const setTokenHandler = (token: string, save = true) => {
     setToken(token);
+
+    // update default headers for axios
+    Api.updateAuthHeaders(token);
 
     if (save) {
       // store token in local storage

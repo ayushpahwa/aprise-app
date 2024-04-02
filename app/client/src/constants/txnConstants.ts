@@ -98,3 +98,5 @@ export const CURRENCIES = [
   { id: 37, name: 'Vietnamese Dong', symbol: 'VND' },
   { id: 17, name: 'South African Rand', symbol: 'ZAR' },
 ];
+
+export const DEFAULT_CURRENCY = CURRENCIES[38];

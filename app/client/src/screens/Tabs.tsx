@@ -1,11 +1,13 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import TransactionContextProvider, { TransactionContext } from 'store/TransactionsContext';
+import TransactionContextProvider from 'store/TransactionsContext';
 import Home from './Home';
-import Details from './Details';
+import Activities from './Activities';
 import { TransactionModal } from 'components/TransactionModal';
+import Profile from './Profile';
+import Groups from './Groups';
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
@@ -14,7 +16,6 @@ function DummyComponentForModalTab() {
 }
 
 export const Tabs = () => {
-  const { ui } = useContext(TransactionContext);
   return (
     <>
       <TransactionModal />
@@ -26,7 +27,15 @@ export const Tabs = () => {
             component={Home}
             options={{
               title: 'Home',
-              tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home" size={24} color={color} />,
+              tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="home" size={size} color={color} />,
+            }}
+          />
+          <Screen
+            name="Activities"
+            component={Activities}
+            options={{
+              title: 'Activities',
+              tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="history" size={size} color={color} />,
             }}
           />
           {/* Add tab which doesn't open a screen, just opens a modal */}
@@ -35,22 +44,23 @@ export const Tabs = () => {
             component={DummyComponentForModalTab}
             options={{
               title: 'Add',
-              tabBarIcon: ({ color }) => <MaterialCommunityIcons name="plus" size={24} color={color} />,
+              tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="plus" size={size} color={color} />,
             }}
-            listeners={() => ({
-              tabPress: (e) => {
-                e.preventDefault();
-                // Open the modal
-                ui.openModal();
-              },
-            })}
           />
           <Screen
-            name="AllExpenses"
-            component={Details}
+            name="Groups"
+            component={Groups}
             options={{
-              title: 'All Expenses',
-              tabBarIcon: ({ color }) => <MaterialCommunityIcons name="format-list-bulleted" size={24} color={color} />,
+              title: 'Groups',
+              tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="account-group-outline" size={size} color={color} />,
+            }}
+          />
+          <Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              title: 'Profile',
+              tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="account-circle-outline" size={size} color={color} />,
             }}
           />
         </Navigator>
