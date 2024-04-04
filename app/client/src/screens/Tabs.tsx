@@ -21,7 +21,13 @@ export const Tabs = () => {
       <TransactionModal />
 
       <TransactionContextProvider>
-        <Navigator>
+        <Navigator
+          screenOptions={{
+            headerShown: false,
+            tabBarActiveTintColor: '#2f95dc',
+            tabBarInactiveTintColor: 'gray',
+          }}
+        >
           <Screen
             name="Home"
             component={Home}
