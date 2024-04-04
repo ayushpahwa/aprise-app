@@ -11,6 +11,7 @@ export enum GroupType {
 export interface Group {
   id: number;
   name: string;
+  description: string;
   currencies: Currency[];
   type: GroupType;
   createdAt: string;
