@@ -1,3 +1,5 @@
+import { StyleSheet } from 'react-native';
+
 export const Colors = {
   primary_trust: '#0F766E',
   primary_calm: '#1E3A8A',
@@ -11,3 +13,11 @@ export const Colors = {
   error100: '#fcdcbf',
   error500: '#f37c13',
 };
+
+export const defaultStyles = StyleSheet.create({
+  titleText: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 16,
+  },
+});
