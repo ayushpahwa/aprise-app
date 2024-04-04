@@ -32,3 +32,13 @@ export const VALIDATION_PASSWORDS_MUST_MATCH = () => 'Passwords must match';
 export const VALIDATION_EMAILS_MUST_MATCH = () => 'Email addresses must match';
 export const VALIDATION_INVALID_INPUT = () => 'Please check your entered credentials';
 export const VALIDATION_FULLNAME_REQUIRED = () => 'Name is required';
+
+// Placeholder messages
+export const PLACEHOLDER_SEARCH_GROUPS = () => 'Search Groups';
+
+// Groups
+export const CREATE_GROUP_TITLE = () => 'Create a new group';
+export const YOUR_GROUPS_TITLE = () => 'Your groups';
+export const GROUP_DESC_PERSONAL = () => 'Your personal expenses';
+export const GROUP_DESC_HOME = () => 'Shared home expenses';
+export const GROUP_DESC_TRAVEL = () => 'Detox and explore';
