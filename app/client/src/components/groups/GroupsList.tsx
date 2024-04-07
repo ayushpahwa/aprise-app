@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { Group } from 'api/GroupsAPI';
 import GroupListItem from './GroupListItem';
@@ -11,12 +11,10 @@ interface Props {
 
 const GroupsList = ({ groupsList, isLoading }: Props) => {
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       {isLoading && <ProgressBar />}
-      {groupsList?.map((group: any) => (
-        <GroupListItem key={group.id} group={group} />
-      ))}
-    </ScrollView>
+      <FlatList data={groupsList} renderItem={({ item }) => <GroupListItem group={item} />} keyExtractor={(item) => item.id.toString()} />
+    </View>
   );
 };
 
@@ -24,7 +22,6 @@ export default GroupsList;
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
     width: '100%',
   },
 });
