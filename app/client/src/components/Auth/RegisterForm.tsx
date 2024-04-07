@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import CustomTextInput from 'components/ui/CustomTextInput';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Alert, StyleSheet, View } from 'react-native';
-import { emailValidationConfig, fullNameValidationConfig, passwordValidationConfig } from 'constants/formValidationConfigs';
+import { emailValidationConfig, nameValidationConfig, passwordValidationConfig } from 'constants/formValidationConfigs';
 import {
   AUTH_ALERT_LOGIN_ERROR_TITLE,
   AUTH_ALERT_REGISTER_ERROR_MESSAGE,
@@ -70,7 +70,7 @@ export const RegisterForm = ({ onAuthenticate }: Props) => {
         name={RegisterFormFields.fullName}
         label={createMessage(AUTH_FORM_FULLNAME_LABEL)}
         control={control}
-        validationRules={fullNameValidationConfig}
+        validationRules={nameValidationConfig}
       />
       <CustomTextInput
         autoComplete="email"

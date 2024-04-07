@@ -1,4 +1,5 @@
 import {
+  VALIDATION_DESC_REQUIRED,
   VALIDATION_EMAIL_INVALID,
   VALIDATION_EMAIL_REQUIRED,
   VALIDATION_FULLNAME_REQUIRED,
@@ -23,6 +24,10 @@ export const passwordValidationConfig = {
   },
 };
 
-export const fullNameValidationConfig = {
+export const nameValidationConfig = {
   required: createMessage(VALIDATION_FULLNAME_REQUIRED),
+};
+
+export const descValidationConfig = {
+  required: createMessage(VALIDATION_DESC_REQUIRED),
 };
