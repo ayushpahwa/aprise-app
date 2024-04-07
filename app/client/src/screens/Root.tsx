@@ -7,8 +7,10 @@ import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from 'store/AuthContext';
 import { LocalStoreKeys, getDataFromLocalStore } from 'store/localStore';
 import { hideAsync } from 'expo-splash-screen';
+import ManageGroups from './Groups/ManageGroups';
+import { RootStackParamList, ScreenNamesEnum } from 'constants/navigationTypes';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function RootStack() {
   const [checkingAuth, setCheckingAuth] = useState(true);
@@ -42,7 +44,7 @@ function AuthStack() {
         contentStyle: { backgroundColor: Colors.primary_calm },
       }}
     >
-      <Stack.Screen name="Auth" component={AuthScreen} />
+      <Stack.Screen name={ScreenNamesEnum.ROOT_AUTH} component={AuthScreen} />
     </Stack.Navigator>
   );
 }
@@ -51,17 +53,17 @@ function AuthenticatedStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
         contentStyle: { backgroundColor: Colors.background },
       }}
     >
       <Stack.Screen
-        name="Tabs"
+        name={ScreenNamesEnum.ROOT_TABS}
         component={Tabs}
         options={{
           headerShown: false,
         }}
       />
+      <Stack.Screen name={ScreenNamesEnum.ROOT_MANAGE_GROUPS} component={ManageGroups} />
     </Stack.Navigator>
   );
 }

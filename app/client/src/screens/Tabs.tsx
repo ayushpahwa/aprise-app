@@ -8,8 +8,9 @@ import Activities from './Activities';
 import { TransactionModal } from 'components/TransactionModal';
 import Profile from './Profile';
 import Groups from './Groups';
+import { ScreenNamesEnum, TabsStackParamList } from 'constants/navigationTypes';
 
-const { Navigator, Screen } = createBottomTabNavigator();
+const { Navigator, Screen } = createBottomTabNavigator<TabsStackParamList>();
 
 function DummyComponentForModalTab() {
   return null;
@@ -29,7 +30,7 @@ export const Tabs = () => {
           }}
         >
           <Screen
-            name="Home"
+            name={ScreenNamesEnum.TABS_HOME}
             component={Home}
             options={{
               title: 'Home',
@@ -37,7 +38,7 @@ export const Tabs = () => {
             }}
           />
           <Screen
-            name="Activities"
+            name={ScreenNamesEnum.TABS_ACTIVITIES}
             component={Activities}
             options={{
               title: 'Activities',
@@ -46,7 +47,7 @@ export const Tabs = () => {
           />
           {/* Add tab which doesn't open a screen, just opens a modal */}
           <Screen
-            name="Add"
+            name={ScreenNamesEnum.TABS_ADD}
             component={DummyComponentForModalTab}
             options={{
               title: 'Add',
@@ -54,7 +55,7 @@ export const Tabs = () => {
             }}
           />
           <Screen
-            name="Groups"
+            name={ScreenNamesEnum.TABS_GROUPS}
             component={Groups}
             options={{
               title: 'Groups',
@@ -62,7 +63,7 @@ export const Tabs = () => {
             }}
           />
           <Screen
-            name="Profile"
+            name={ScreenNamesEnum.TABS_PROFILE}
             component={Profile}
             options={{
               title: 'Profile',
