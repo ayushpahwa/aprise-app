@@ -23,6 +23,7 @@ import { useMutation } from '@tanstack/react-query';
 import { LoadingIndicator } from 'components/ui/LoadingIndicator';
 import { ApiResponse } from 'constants/apiConstants';
 import { validateResponse } from 'utils/ApiUtils';
+import { CURRENCIES } from 'constants/txnConstants';
 
 export interface ManageGroupsFormInput {
   name: string;
@@ -80,7 +81,8 @@ const ManageGroups: React.FC<Iprops> = ({ route }) => {
 
   const submitHandler: SubmitHandler<ManageGroupsFormInput> = async ({ name, groupType, description, defaultCurrencyIndex }) => {
     try {
-      await mutateAsync({ name, type: groupType, description, currencyId: defaultCurrencyIndex, members: [] });
+      const currencyId = CURRENCIES[defaultCurrencyIndex].id;
+      await mutateAsync({ name, type: groupType, description, currencyId, members: [] });
     } catch (error: any) {
       console.debug('CreateGroup -> error', error);
       Alert.alert('Error', 'Something went wrong');
