@@ -21,6 +21,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
+    private String description;
 
     @Enumerated(EnumType.STRING)
     private GroupType type;

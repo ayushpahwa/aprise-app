@@ -40,8 +40,8 @@ public class GroupService {
     private final TransactionService transactionService;
 
     @Transactional
-    public Group createGroupForUser(User user, Currency currency, GroupType groupType, String name, Boolean isDefault) {
-        Group group = Group.builder().type(groupType).name(name).createdAt(LocalDateTime.now()).build();
+    public Group createGroupForUser(User user, Currency currency, GroupType groupType, String name, String description ,Boolean isDefault) {
+        Group group = Group.builder().type(groupType).name(name).description(description).createdAt(LocalDateTime.now()).build();
 
         try {
             groupRepository.save(group);
@@ -65,7 +65,7 @@ public class GroupService {
 
     @Transactional
     public void createDefaultGroupForUser(User user, Currency currency) {
-        createGroupForUser(user, currency, GroupType.PERSONAL, GroupType.PERSONAL.toString().toLowerCase() + " group", true);
+        createGroupForUser(user, currency, GroupType.PERSONAL, GroupType.PERSONAL.toString().toLowerCase() + " group","Personal expenses", true);
     }
 
     @Transactional
@@ -79,7 +79,7 @@ public class GroupService {
         var currency = currenciesRepository.findById(currency_id).orElseThrow(() -> new ApriseException(GlobalError.INVALID_CURRENCY));
 
         // Create group
-        Group createdGroup = createGroupForUser(validatedUser, currency, request.getType(), request.getName(), false);
+        Group createdGroup = createGroupForUser(validatedUser, currency, request.getType(), request.getName(),request.getDescription(), false);
 
         // Add members to group
         request.getMembers().forEach(memberId -> {
@@ -89,7 +89,7 @@ public class GroupService {
             groupMemberService.addMemberToGroup(createdGroup, member, false, false);
         });
 
-        return GroupResponseDTO.builder().id(createdGroup.getId()).name(createdGroup.getName()).currencies(List.of(currency)).type(createdGroup.getType()).createdAt(createdGroup.getCreatedAt().toString()).build();
+        return GroupResponseDTO.builder().id(createdGroup.getId()).name(createdGroup.getName()).description(createdGroup.getDescription()).currencies(List.of(currency)).type(createdGroup.getType()).createdAt(createdGroup.getCreatedAt().toString()).build();
     }
 
     public List<GroupResponseDTO> getGroupsForCurrentUser() {
@@ -102,7 +102,7 @@ public class GroupService {
 
         return groups.stream().map(group -> {
             List<Currency> currencies = group.getGroupCurrencies().stream().map(GroupCurrency::getCurrency).toList();
-            return GroupResponseDTO.builder().id(group.getId()).name(group.getName()).currencies(currencies).type(group.getType()).createdAt(group.getCreatedAt().toString()).build();
+            return GroupResponseDTO.builder().id(group.getId()).name(group.getName()).description(group.getDescription()).currencies(currencies).type(group.getType()).createdAt(group.getCreatedAt().toString()).build();
         }).toList();
     }
 
