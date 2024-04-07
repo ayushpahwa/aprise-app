@@ -2,10 +2,10 @@ export function createMessage(format: (...strArgs: any[]) => string, ...args: an
   return format(...args);
 }
 
+export const ERROR_0 = () => `We could not connect to our servers. Please check your network connection`;
 export const ERROR_401 = () => `We are unable to verify your identity. Please login again.`;
 export const ERROR_413 = (maxFileSize: number) => `Payload too large. File size cannot exceed ${maxFileSize}MB.`;
-export const ERROR_403 = (entity: string, userEmail: string) =>
-  `Sorry, but your account (${userEmail}) does not seem to have the required access to update this ${entity}. Please get in touch with your aprise admin to resolve this.`;
+export const ERROR_403 = () => `Unauthorized access. You do not have permission to access this resource.`;
 export const ERROR_500 = () => `We apologize, something went wrong. We're trying to fix things.`;
 export const SERVER_API_TIMEOUT_ERROR = () => `Aprise server is taking too long to respond. Please try again after some time`;
 
@@ -32,6 +32,7 @@ export const VALIDATION_PASSWORDS_MUST_MATCH = () => 'Passwords must match';
 export const VALIDATION_EMAILS_MUST_MATCH = () => 'Email addresses must match';
 export const VALIDATION_INVALID_INPUT = () => 'Please check your entered credentials';
 export const VALIDATION_FULLNAME_REQUIRED = () => 'Name is required';
+export const VALIDATION_DESC_REQUIRED = () => 'Description is required';
 
 // Placeholder messages
 export const PLACEHOLDER_SEARCH_GROUPS = () => 'Search Groups';
@@ -46,3 +47,4 @@ export const GROUP_DESC_TRAVEL = () => 'Detox and explore';
 export const MANAGE_GROUP_FIELD_NAME = () => 'Group Name';
 export const MANAGE_GROUP_FIELD_DESCRIPTION = () => 'Group Description';
 export const MANAGE_GROUP_SCREEN_TITLE = (editMode: boolean) => (!!editMode ? 'Edit Group' : 'Create Group');
+export const MANAGE_GROUP_CTA = (editMode: boolean) => (!!editMode ? 'Update Group' : 'Create Group');

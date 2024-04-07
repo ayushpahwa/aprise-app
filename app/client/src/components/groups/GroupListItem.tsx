@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     height: 'auto',
     width: '100%',
     flexDirection: 'row',
+    marginBottom: 12,
   },
   groupIconContainer: {
     alignItems: 'center',
