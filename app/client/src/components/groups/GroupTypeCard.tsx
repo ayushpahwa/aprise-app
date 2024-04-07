@@ -2,23 +2,27 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GroupType } from 'api/GroupsAPI';
-import { iconForGroupType } from 'utils/GroupUtils';
+import { generateSentenceCase, iconForGroupType } from 'utils/GroupUtils';
+import { Colors } from 'constants/styles';
 
 interface Props {
   groupType: GroupType;
+  selected: boolean;
+  onSelectChange: (groupType: GroupType) => void;
 }
 
-const GroupTypeCard = ({ groupType }: Props) => {
+const GroupTypeCard = ({ groupType, selected, onSelectChange }: Props) => {
   const iconName = iconForGroupType(groupType);
+
   return (
     <TouchableOpacity
       onPress={() => {
-        console.log('Create new group', groupType);
+        onSelectChange(groupType);
       }}
     >
-      <View style={styles.container}>
+      <View style={[styles.container, selected && styles.selected]}>
         <MaterialCommunityIcons size={24} name={iconName} style={styles.groupIcon} />
-        <Text>{groupType}</Text>
+        <Text>{generateSentenceCase(groupType)}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -37,6 +41,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
+  },
+  selected: {
+    backgroundColor: Colors.accent_gray,
+    borderWidth: 2,
   },
   groupIcon: {
     opacity: 0.5,

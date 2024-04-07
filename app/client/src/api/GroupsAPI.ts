@@ -3,9 +3,9 @@ import Api from './Api';
 import { Currency } from './UserAPI';
 
 export enum GroupType {
-  PERSONAL = 'Personal',
-  HOME = 'Home',
-  Travel = 'Travel',
+  PERSONAL = 'PERSONAL',
+  HOME = 'HOME',
+  TRAVEL = 'TRAVEL',
 }
 
 export interface Group {
