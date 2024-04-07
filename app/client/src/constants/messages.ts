@@ -38,7 +38,11 @@ export const PLACEHOLDER_SEARCH_GROUPS = () => 'Search Groups';
 
 // Groups
 export const CREATE_GROUP_TITLE = () => 'Create a new group';
+export const SELECT_GROUP_TITLE = () => 'Select group type';
 export const YOUR_GROUPS_TITLE = () => 'Your groups';
 export const GROUP_DESC_PERSONAL = () => 'Your personal expenses';
 export const GROUP_DESC_HOME = () => 'Shared home expenses';
 export const GROUP_DESC_TRAVEL = () => 'Detox and explore';
+export const MANAGE_GROUP_FIELD_NAME = () => 'Group Name';
+export const MANAGE_GROUP_FIELD_DESCRIPTION = () => 'Group Description';
+export const MANAGE_GROUP_SCREEN_TITLE = (editMode: boolean) => (!!editMode ? 'Edit Group' : 'Create Group');
