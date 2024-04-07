@@ -1,6 +1,7 @@
-import { createMessage, ERROR_413, ERROR_500, SERVER_API_TIMEOUT_ERROR } from '../constants/messages';
+import { createMessage, ERROR_0, ERROR_401, ERROR_403, ERROR_413, ERROR_500, SERVER_API_TIMEOUT_ERROR } from '../constants/messages';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { API_STATUS_CODES, ERROR_CODES, SERVER_ERROR_CODES } from '../api/ApiConstants';
+import { ApiResponse } from 'constants/apiConstants';
 
 const timeoutErrorRegex = /timeout of (\d+)ms exceeded/;
 export const axiosConnectionAbortedCode = 'ECONNABORTED';
@@ -98,3 +99,54 @@ export const apiFailureResponseInterceptor = async (error: any) => {
   console.debug(error.config);
   return Promise.resolve(error);
 };
+
+/**
+ * transform server errors to client error codes
+ *
+ * @param code
+ * @param resourceType
+ */
+const getErrorMessage = (code: number) => {
+  switch (code) {
+    case 401:
+      return createMessage(ERROR_401);
+    case 500:
+      return createMessage(ERROR_500);
+    case 403:
+      return createMessage(ERROR_403);
+    case 0:
+      return createMessage(ERROR_0);
+  }
+};
+
+/**
+ * validates if response does have any errors
+ * @throws {Error}
+ * @param response
+ * @param show
+ * @param logToSentry
+ */
+export function validateResponse(response: ApiResponse | any) {
+  if (!response) {
+    throw Error('');
+  }
+
+  // letting `apiFailureResponseInterceptor` handle it this case
+  if (response?.code === axiosConnectionAbortedCode) {
+    return false;
+  }
+
+  if (!response.responseMeta && !response.status) {
+    throw Error(getErrorMessage(0));
+  }
+
+  if (!response.responseMeta && response.status) {
+    throw Error(getErrorMessage(response.status));
+  }
+
+  if (response.responseMeta.success) {
+    return true;
+  }
+
+  throw Error(response.responseMeta.error.message);
+}
