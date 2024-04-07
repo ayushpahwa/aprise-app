@@ -3,22 +3,32 @@ import React from 'react';
 import GroupTypeCard from './GroupTypeCard';
 import { GroupType } from 'api/GroupsAPI';
 import { defaultStyles } from 'constants/styles';
-import { CREATE_GROUP_TITLE, createMessage } from 'constants/messages';
 
-const CreateGroup = () => {
+interface Props {
+  title: string;
+  onSelectChange: (groupType: GroupType) => void;
+  selectedGroupType?: GroupType;
+}
+
+const GroupTypeSelector = ({ title, selectedGroupType, onSelectChange }: Props) => {
   return (
     <View style={styles.container}>
-      <Text style={defaultStyles.titleText}>{createMessage(CREATE_GROUP_TITLE)}</Text>
+      <Text style={defaultStyles.titleText}>{title}</Text>
       <View style={styles.ctaContainer}>
         {Object.values(GroupType).map((groupType) => (
-          <GroupTypeCard key={groupType} groupType={groupType} />
+          <GroupTypeCard
+            key={groupType}
+            groupType={groupType}
+            selected={!!selectedGroupType && groupType === selectedGroupType}
+            onSelectChange={onSelectChange}
+          />
         ))}
       </View>
     </View>
   );
 };
 
-export default CreateGroup;
+export default GroupTypeSelector;
 
 const styles = StyleSheet.create({
   container: {
