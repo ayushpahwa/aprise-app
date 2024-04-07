@@ -12,16 +12,18 @@ interface Props {
   autoComplete?: 'off' | 'email' | 'name';
   label: string;
   keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+  defaultValue?: string;
   secure?: boolean;
   control: Control<any>;
   name: FieldName; // Prop used by react-hook-form to identify the input
   validationRules?: Omit<RegisterOptions<any, FieldName>, 'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'>; // Prop used by react-hook-form to define validation rules
 }
 
-function CustomTextInput({ autoCapitalize = 'none', autoComplete, control, label, keyboardType, secure, name, validationRules = {} }: Props) {
+function CustomTextInput({ autoCapitalize = 'none', autoComplete, control, label, keyboardType, secure, name, validationRules = {}, defaultValue }: Props) {
   return (
     <Controller
       control={control}
+      defaultValue={defaultValue}
       name={name}
       rules={validationRules}
       render={({ field: { value, onBlur, onChange }, fieldState: { error } }) => (
