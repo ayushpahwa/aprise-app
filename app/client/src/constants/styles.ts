@@ -20,4 +20,10 @@ export const defaultStyles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 16,
   },
+  topCard: {
+    paddingVertical: 24,
+    margin: -1,
+    backgroundColor: Colors.accent_success,
+    opacity: 0.7,
+  },
 });
