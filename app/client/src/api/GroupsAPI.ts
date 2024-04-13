@@ -1,6 +1,7 @@
+import { Transaction } from 'constants/types/txnTypes';
 import Api from './Api';
 import { Currency } from './UserAPI';
-import { ApiResponse } from 'constants/apiConstants';
+import { ApiResponse } from 'constants/types/apiTypes';
 
 export enum GroupType {
   PERSONAL = 'PERSONAL',
@@ -28,12 +29,18 @@ export interface CreateGroupDTO {
 export class GroupsAPI extends Api {
   static BASE = '/groups';
 
+  static TXN_BASE = '/transactions';
+
   static async getGroups(): Promise<ApiResponse<Group[]>> {
     return Api.get(GroupsAPI.BASE);
   }
 
   static async createGroup(payload: CreateGroupDTO): Promise<ApiResponse<Group>> {
     return Api.post(GroupsAPI.BASE, payload);
+  }
+
+  static async getGroupTransactions(groupId: number): Promise<ApiResponse<Transaction[]>> {
+    return Api.get(`${GroupsAPI.BASE}/${groupId}${GroupsAPI.TXN_BASE}`);
   }
 }
 
