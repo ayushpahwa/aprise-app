@@ -8,7 +8,8 @@ import { AuthContext } from 'store/AuthContext';
 import { LocalStoreKeys, getDataFromLocalStore } from 'store/localStore';
 import { hideAsync } from 'expo-splash-screen';
 import ManageGroups from './Groups/ManageGroups';
-import { RootStackParamList, ScreenNamesEnum } from 'constants/navigationTypes';
+import { RootStackParamList, ScreenNamesEnum } from 'constants/types/navigationTypes';
+import GroupDetails from './Groups/GroupDetails';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -63,7 +64,15 @@ function AuthenticatedStack() {
           headerShown: false,
         }}
       />
+      {/* Group screens */}
       <Stack.Screen name={ScreenNamesEnum.ROOT_MANAGE_GROUPS} component={ManageGroups} />
+      <Stack.Screen
+        name={ScreenNamesEnum.ROOT_GROUP_DETAILS}
+        component={GroupDetails}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack.Navigator>
   );
 }

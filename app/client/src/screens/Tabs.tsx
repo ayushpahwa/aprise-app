@@ -8,7 +8,7 @@ import Activities from './Activities';
 import { TransactionModal } from 'components/TransactionModal';
 import Profile from './Profile';
 import Groups from './Groups';
-import { ScreenNamesEnum, TabsStackParamList } from 'constants/navigationTypes';
+import { ScreenNamesEnum, TabsStackParamList } from 'constants/types/navigationTypes';
 
 const { Navigator, Screen } = createBottomTabNavigator<TabsStackParamList>();
 

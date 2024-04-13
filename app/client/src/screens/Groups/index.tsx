@@ -8,7 +8,7 @@ import { CREATE_GROUP_TITLE, PLACEHOLDER_SEARCH_GROUPS, YOUR_GROUPS_TITLE, creat
 import CreateGroupCard from 'components/groups/GroupTypeSelector';
 import { defaultStyles } from 'constants/styles';
 import GroupsList from 'components/groups/GroupsList';
-import { RootStackNavigationType, ScreenNamesEnum } from 'constants/navigationTypes';
+import { RootStackNavigationType, ScreenNamesEnum } from 'constants/types/navigationTypes';
 import { useNavigation } from '@react-navigation/native';
 import { validateResponse } from 'utils/ApiUtils';
 

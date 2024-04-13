@@ -1,7 +1,7 @@
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useMemo } from 'react';
 import GroupsAPI, { CreateGroupDTO, Group, GroupType } from 'api/GroupsAPI';
-import { RootStackNavigationType, RootStackParamList, ScreenNamesEnum } from 'constants/navigationTypes';
+import { RootStackNavigationType, RootStackParamList, ScreenNamesEnum } from 'constants/types/navigationTypes';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import GroupTypeSelector from 'components/groups/GroupTypeSelector';
 import {
@@ -21,7 +21,7 @@ import { Button } from '@ui-kitten/components';
 import { CurrencyPicker } from 'components/ui/CurrencyPicker';
 import { useMutation } from '@tanstack/react-query';
 import { LoadingIndicator } from 'components/ui/LoadingIndicator';
-import { ApiResponse } from 'constants/apiConstants';
+import { ApiResponse } from 'constants/types/apiTypes';
 import { validateResponse } from 'utils/ApiUtils';
 import { CURRENCIES } from 'constants/txnConstants';
 

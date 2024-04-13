@@ -1,7 +1,7 @@
 import { createMessage, ERROR_0, ERROR_401, ERROR_403, ERROR_413, ERROR_500, SERVER_API_TIMEOUT_ERROR } from '../constants/messages';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { API_STATUS_CODES, ERROR_CODES, SERVER_ERROR_CODES } from '../api/ApiConstants';
-import { ApiResponse } from 'constants/apiConstants';
+import { ApiResponse } from 'constants/types/apiTypes';
 
 const timeoutErrorRegex = /timeout of (\d+)ms exceeded/;
 export const axiosConnectionAbortedCode = 'ECONNABORTED';
