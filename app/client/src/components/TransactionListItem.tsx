@@ -1,23 +1,21 @@
-import { useContext } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Transaction, TransactionContext } from 'store/TransactionsContext';
 import { TRANSACTION_TYPES } from 'constants/txnConstants';
 import { MaterialIcons as Icon } from '@expo/vector-icons';
 import moment from 'moment';
+import { Transaction } from 'constants/types/txnTypes';
 
 interface TransactionListItemProps {
   transaction: Transaction;
 }
 
 export const TransactionListItem = ({ transaction }: TransactionListItemProps) => {
-  const { ui, deleteTransaction } = useContext(TransactionContext);
   const signMultiplier = transaction.type === TRANSACTION_TYPES.EXPENSE ? -1 : 1;
   const formattedAmount = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
   }).format(transaction.amount * signMultiplier);
   const pressHandler = () => {
-    ui.openModal(transaction.id.toString());
+    console.log('Transaction clicked', transaction.id);
   };
 
   const txnDate = moment(transaction.createdAt).format('DD/MM/YYYY HH:mm');
@@ -30,7 +28,6 @@ export const TransactionListItem = ({ transaction }: TransactionListItemProps) =
             <Text>{formattedAmount}</Text>
           </View>
           <View style={styles.container}>
-            <Text>{transaction.category}</Text>
             <Text>{txnDate}</Text>
           </View>
         </View>
@@ -39,7 +36,7 @@ export const TransactionListItem = ({ transaction }: TransactionListItemProps) =
           size={24}
           color="red"
           onPress={() => {
-            deleteTransaction(transaction.id);
+            console.log('Delete transaction', transaction.id);
           }}
         />
       </View>

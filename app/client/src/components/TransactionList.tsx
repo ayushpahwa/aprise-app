@@ -1,16 +1,26 @@
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { Transaction } from 'store/TransactionsContext';
+import { View, StyleSheet } from 'react-native';
 import { NoTransactionUI } from './NoTransactionUI';
 import { TransactionListItem } from './TransactionListItem';
+import { Transaction } from 'constants/types/txnTypes';
+import { ProgressBar } from '@ui-kitten/components';
+import { FlashList } from '@shopify/flash-list';
 
 interface Props {
   transactions: Transaction[];
+  isLoading: boolean;
 }
 
-export const TransactionsList = ({ transactions }: Props) => {
+export const TransactionsList = ({ transactions, isLoading }: Props) => {
+  if (isLoading) {
+    return <ProgressBar />;
+  }
   return (
     <View style={styles.container}>
-      {transactions.length === 0 ? <NoTransactionUI /> : <FlatList data={transactions} renderItem={({ item }) => <TransactionListItem transaction={item} />} />}
+      {transactions.length === 0 ? (
+        <NoTransactionUI />
+      ) : (
+        <FlashList data={transactions} renderItem={({ item }) => <TransactionListItem transaction={item} />} estimatedItemSize={100} />
+      )}
     </View>
   );
 };
