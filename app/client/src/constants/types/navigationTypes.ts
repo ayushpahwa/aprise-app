@@ -6,6 +6,7 @@ export enum ScreenNamesEnum {
   ROOT_AUTH = 'Auth',
   ROOT_TABS = 'Tabs',
   ROOT_MANAGE_GROUPS = 'ManageGroups',
+  ROOT_GROUP_DETAILS = 'GroupDetails',
   // Tabs stack screens
   TABS_HOME = 'Home',
   TABS_GROUPS = 'Groups',
@@ -19,6 +20,7 @@ export type RootStackParamList = {
   [ScreenNamesEnum.ROOT_AUTH]: undefined;
   [ScreenNamesEnum.ROOT_TABS]: undefined;
   [ScreenNamesEnum.ROOT_MANAGE_GROUPS]: Partial<Group>;
+  [ScreenNamesEnum.ROOT_GROUP_DETAILS]: { groupId: number };
 };
 export type RootStackNavigationType = NavigationProp<RootStackParamList>;
 

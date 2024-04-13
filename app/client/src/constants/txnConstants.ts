@@ -1,7 +1,11 @@
-export const TRANSACTION_TYPES = {
-  EXPENSE: 'EXPENSE',
-  INCOME: 'INCOME',
-};
+export enum TRANSACTION_TYPES {
+  EXPENSE = 'EXPENSE',
+  INCOME = 'INCOME',
+}
+
+export enum TRANSACTION_SPLIT_TYPES {
+  EQUAL = 'EQUAL',
+}
 
 export const CURRENCIES = [
   { id: 30, name: 'Emirati Dirham', symbol: 'AED' },
