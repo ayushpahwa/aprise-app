@@ -4,17 +4,20 @@ import { Group } from 'api/GroupsAPI';
 import { generateSentenceCase, getGroupDescription, iconForGroupType } from 'utils/GroupUtils';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from 'constants/styles';
+import { useNavigation } from '@react-navigation/native';
+import { RootStackNavigationType, ScreenNamesEnum } from 'constants/types/navigationTypes';
 
 interface Props {
   group: Group;
 }
 
 const GroupListItem = ({ group }: Props) => {
+  const { navigate } = useNavigation<RootStackNavigationType>();
   const iconName = iconForGroupType(group.type);
   return (
     <TouchableOpacity
       onPress={() => {
-        console.log('Open group', group.id);
+        navigate(ScreenNamesEnum.ROOT_GROUP_DETAILS, { groupId: group.id });
       }}
     >
       <View style={styles.container}>
