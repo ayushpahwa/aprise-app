@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, ProgressBar } from '@ui-kitten/components';
 import { QUERY_KEYS } from 'api/ApiConstants';
 import UserAPI from 'api/UserAPI';
-import { Colors } from 'constants/styles';
+import { Colors, defaultStyles } from 'constants/styles';
 import { DEFAULT_CURRENCY } from 'constants/txnConstants';
 import { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -28,7 +28,7 @@ const Home = () => {
 
   return (
     <View>
-      <Card style={styles.topCard}>
+      <Card style={defaultStyles.topCard}>
         <Text style={styles.labelText}>Welcome back 👋 </Text>
         <Text style={styles.nameText}>{fullName}</Text>
         <View style={styles.balanceContainer}>
@@ -46,12 +46,6 @@ const Home = () => {
 export default Home;
 
 const styles = StyleSheet.create({
-  topCard: {
-    paddingVertical: 24,
-    margin: -1,
-    backgroundColor: Colors.accent_success,
-    opacity: 0.7,
-  },
   labelText: {
     fontSize: 12,
     lineHeight: 20,
