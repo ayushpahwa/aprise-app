@@ -34,6 +34,7 @@ import { LoadingIndicator } from "components/ui/LoadingIndicator";
 import type { ApiResponse } from "constants/types/apiTypes";
 import { validateResponse } from "utils/ApiUtils";
 import { CURRENCIES } from "constants/txnConstants";
+import { debug } from "loglevel";
 
 export interface ManageGroupsFormInput {
   name: string;
@@ -108,7 +109,7 @@ const ManageGroups: React.FC<Iprops> = ({ route }) => {
         members: [],
       });
     } catch (error: any) {
-      console.debug("CreateGroup -> error", error);
+      debug("CreateGroup -> error", error);
       Alert.alert("Error", "Something went wrong");
     }
   };

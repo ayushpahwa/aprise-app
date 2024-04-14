@@ -14,6 +14,7 @@ import {
   SERVER_ERROR_CODES,
 } from "../api/ApiConstants";
 import type { ApiResponse } from "constants/types/apiTypes";
+import { debug } from "loglevel";
 
 const timeoutErrorRegex = /timeout of (\d+)ms exceeded/;
 export const axiosConnectionAbortedCode = "ECONNABORTED";
@@ -88,7 +89,7 @@ export const apiFailureResponseInterceptor = async (error: any) => {
     // that falls out of the range of 2xx
     if (!is404orAuthPath()) {
       if (error.response.status === API_STATUS_CODES.REQUEST_NOT_AUTHORISED) {
-        console.log("Unauthorized", error.response.data);
+        debug("Unauthorized", error.response.data);
         return Promise.reject({
           ...error,
           code: ERROR_CODES.REQUEST_NOT_AUTHORISED,
@@ -117,12 +118,12 @@ export const apiFailureResponseInterceptor = async (error: any) => {
     // The request was made but no response was received
     // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
     // http.ClientRequest in node.js
-    console.debug(error.request);
+    debug(error.request);
   } else {
     // Something happened in setting up the request that triggered an Error
-    console.debug("Error", error.message);
+    debug("Error", error.message);
   }
-  console.debug(error.config);
+  debug(error.config);
   return Promise.resolve(error);
 };
 

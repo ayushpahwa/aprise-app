@@ -19,6 +19,7 @@ import { validateResponse } from "utils/ApiUtils";
 import { LoadingIndicator } from "./ui/LoadingIndicator";
 import { generatePayloadForCreateTransaction } from "utils/TxnUtils";
 import Toast from "react-native-toast-message";
+import { debug } from "loglevel";
 
 export interface CreateTransactionFormInput {
   transactionType: TRANSACTION_TYPES;
@@ -47,7 +48,7 @@ export const TransactionModal = () => {
     queryFn: GroupsAPI.getGroups,
   });
 
-  console.log(groupsResponse, fetchingGroups, fetchGroupsError);
+  debug(groupsResponse, fetchingGroups, fetchGroupsError);
 
   const groups = useMemo(
     () =>

@@ -15,6 +15,7 @@ import { defaultStyles } from "constants/styles";
 import BackButton from "components/ui/BackButton";
 import SettingsButton from "components/ui/SettingsButton";
 import { TransactionsList } from "components/TransactionList";
+import { debug } from "loglevel";
 
 interface Iprops {
   route: RouteProp<RootStackParamList, ScreenNamesEnum.ROOT_GROUP_DETAILS>;
@@ -56,7 +57,7 @@ const GroupDetails = ({ route }: Iprops) => {
   }, [groupTxnList, isError, isLoading]);
 
   const handleSettingsPress = () => {
-    console.log("Settings pressed");
+    debug("Settings pressed");
   };
 
   return (

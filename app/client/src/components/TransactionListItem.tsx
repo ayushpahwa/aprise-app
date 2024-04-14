@@ -4,6 +4,7 @@ import { TRANSACTION_TYPES } from "constants/txnConstants";
 import moment from "moment";
 import type { Transaction } from "constants/types/txnTypes";
 import { useMemo } from "react";
+import { debug } from "loglevel";
 
 interface TransactionListItemProps {
   transaction: Transaction;
@@ -22,7 +23,7 @@ export const TransactionListItem = ({
   }, [transaction.amount, transaction.currency.symbol, transaction.type]);
 
   const pressHandler = () => {
-    console.log("Transaction clicked", transaction.id);
+    debug("Transaction clicked", transaction.id);
   };
 
   // Format the time to show only hours and minutes and convert to local time from UTC

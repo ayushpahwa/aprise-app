@@ -25,6 +25,7 @@ import { Button } from "@ui-kitten/components";
 import { LoadingIndicator } from "components/ui/LoadingIndicator";
 import { CurrencyPicker } from "components/ui/CurrencyPicker";
 import { CURRENCIES } from "constants/txnConstants";
+import { debug } from "loglevel";
 
 export interface RegisterFormInput {
   fullName: string;
@@ -55,7 +56,7 @@ export const RegisterForm = ({ onAuthenticate }: Props) => {
       return await AuthApi.register(payload);
     },
     onSuccess: (data) => {
-      console.log("RegisterForm -> data", data);
+      debug("RegisterForm -> data", data);
       onAuthenticate(data.data.token);
     },
   });
@@ -69,7 +70,7 @@ export const RegisterForm = ({ onAuthenticate }: Props) => {
       if (errors && Object.keys(errors).length > 0) return;
       const defaultCurrencyId = CURRENCIES[defaultCurrencyIndex].id;
       await mutateAsync({ email, password, fullName, defaultCurrencyId });
-      console.log({ email, password, fullName, defaultCurrencyId });
+      debug({ email, password, fullName, defaultCurrencyId });
     } catch (error: any) {
       Alert.alert(
         createMessage(AUTH_ALERT_LOGIN_ERROR_TITLE),
