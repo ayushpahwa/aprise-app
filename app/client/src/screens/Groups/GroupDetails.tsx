@@ -32,6 +32,7 @@ const GroupDetails = ({ route }: Iprops) => {
     queryKey: [QUERY_KEYS.FETCH_GROUP_DETAILS, groupId],
     queryFn: async () => await GroupsAPI.getGroupTransactions(groupId),
     enabled: !!groupId,
+    refetchOnMount: true,
   });
 
   // Find the group with groupId
