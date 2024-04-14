@@ -9,6 +9,7 @@ import { Colors, defaultStyles } from 'constants/styles';
 import { Controller, useForm } from 'react-hook-form';
 import CustomTextInput from './ui/CustomTextInput';
 import { useEffect } from 'react';
+import GroupSelector from './groups/GroupSelector';
 
 export interface CreateTransactionFormInput {
   transactionType: string;
@@ -21,6 +22,7 @@ export enum TransactionFields {
   transactionType = 'transactionType',
   amount = 'amount',
   description = 'description',
+  groupId = 'groupId',
 }
 
 const TransactionTypes = [TRANSACTION_TYPES.EXPENSE, TRANSACTION_TYPES.INCOME];
@@ -75,6 +77,7 @@ export const TransactionModal = () => {
           defaultValue={TransactionTypes[0]}
         />
         <TransactionAmountInput transactionType={watchTransactionType} control={control} name={TransactionFields.amount} />
+        <GroupSelector control={control} name={TransactionFields.groupId} />
         <CustomTextInput control={control} name={TransactionFields.description} label="Description" />
         <Button onPress={handleModalClose}>Save</Button>
       </KeyboardAvoidingView>
