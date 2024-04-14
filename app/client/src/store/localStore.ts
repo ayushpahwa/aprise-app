@@ -1,16 +1,19 @@
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
 export enum LocalStoreKeys {
-  AUTH_TOKEN = 'AUTH_TOKEN',
+  AUTH_TOKEN = "AUTH_TOKEN",
 }
 
-export const storeDataToLocalStore = async (key: LocalStoreKeys, value: string | object) => {
+export const storeDataToLocalStore = async (
+  key: LocalStoreKeys,
+  value: string | object,
+) => {
   try {
-    if (typeof value === 'object') value = JSON.stringify(value);
+    if (typeof value === "object") value = JSON.stringify(value);
     await SecureStore.setItemAsync(key, value);
   } catch (e) {
     // saving error
-    console.log('Error saving data:', e);
+    console.log("Error saving data:", e);
   }
 };
 
@@ -28,7 +31,7 @@ export const getDataFromLocalStore = async (key: LocalStoreKeys) => {
     return null;
   } catch (e) {
     // error reading value
-    console.log('Error reading data:', e);
+    console.log("Error reading data:", e);
     return null;
   }
 };
@@ -38,6 +41,6 @@ export const removeDataFromLocalStore = async (key: LocalStoreKeys) => {
     await SecureStore.deleteItemAsync(key);
   } catch (e) {
     // error reading value
-    console.log('Error removing data:', e);
+    console.log("Error removing data:", e);
   }
 };

@@ -1,16 +1,17 @@
-import { View, StyleSheet } from 'react-native';
-import { NoTransactionUI } from './NoTransactionUI';
-import { TransactionListItem } from './TransactionListItem';
-import { Transaction } from 'constants/types/txnTypes';
-import { ProgressBar } from '@ui-kitten/components';
-import { FlashList } from '@shopify/flash-list';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { NoTransactionUI } from "./NoTransactionUI";
+import { TransactionListItem } from "./TransactionListItem";
+import type { Transaction } from "constants/types/txnTypes";
+import { ProgressBar } from "@ui-kitten/components";
+import { FlashList } from "@shopify/flash-list";
 
 interface Props {
   transactions: Transaction[];
   isLoading: boolean;
 }
 
-export const TransactionsList = ({ transactions, isLoading }: Props) => {
+export const TransactionsList = ({ isLoading, transactions }: Props) => {
   if (isLoading) {
     return <ProgressBar />;
   }
@@ -19,7 +20,11 @@ export const TransactionsList = ({ transactions, isLoading }: Props) => {
       {transactions.length === 0 ? (
         <NoTransactionUI />
       ) : (
-        <FlashList data={transactions} renderItem={({ item }) => <TransactionListItem transaction={item} />} estimatedItemSize={100} />
+        <FlashList
+          data={transactions}
+          estimatedItemSize={100}
+          renderItem={({ item }) => <TransactionListItem transaction={item} />}
+        />
       )}
     </View>
   );
@@ -27,8 +32,8 @@ export const TransactionsList = ({ transactions, isLoading }: Props) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
-    backgroundColor: '#ccc',
+    height: "100%",
+    backgroundColor: "#ccc",
     padding: 24,
   },
 });

@@ -6,7 +6,7 @@ import {
   VALIDATION_PASSWORD_MIN_LENGTH,
   VALIDATION_PASSWORD_REQUIRED,
   createMessage,
-} from './messages';
+} from "./messages";
 
 export const emailValidationConfig = {
   required: createMessage(VALIDATION_EMAIL_REQUIRED),

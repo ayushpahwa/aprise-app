@@ -1,5 +1,5 @@
-import { createContext, useEffect, useState } from 'react';
-import { dummyTxnData } from './dummyData';
+import React, { createContext, useEffect, useState } from "react";
+import { dummyTxnData } from "./dummyData";
 
 export interface Transaction {
   id: number;
@@ -10,7 +10,7 @@ export interface Transaction {
   createdAt: string;
 }
 
-type TransactionInput = Omit<Transaction, 'id' | 'createdAt'>;
+type TransactionInput = Omit<Transaction, "id" | "createdAt">;
 
 export interface TransactionSearchParams {
   type?: string;
@@ -30,7 +30,9 @@ interface TransactionsContextData {
   ui: TransactionUIState;
   transactions: Transaction[];
   createTransaction: (transaction: TransactionInput) => Promise<void>;
-  fetchTransactions: (searchParams: TransactionSearchParams) => Promise<Transaction[]>;
+  fetchTransactions: (
+    searchParams: TransactionSearchParams,
+  ) => Promise<Transaction[]>;
   deleteTransaction: (id: number) => Promise<void>;
   fetchTransactionById: (id: number) => Promise<Transaction | undefined>;
   updateTransaction: (transaction: Transaction) => Promise<void>;
@@ -40,7 +42,7 @@ export const TransactionContext = createContext<TransactionsContextData>({
   ui: {
     isOpen: false,
     isLoading: false,
-    selectedTxnId: '',
+    selectedTxnId: "",
     openModal: async () => {},
     closeModal: async () => {},
   },
@@ -52,10 +54,14 @@ export const TransactionContext = createContext<TransactionsContextData>({
   updateTransaction: async () => {},
 });
 
-function TransactionContextProvider({ children }: { children: React.ReactNode }) {
+function TransactionContextProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedTxnId, setSelectedTxnId] = useState('');
+  const [selectedTxnId, setSelectedTxnId] = useState("");
 
   useEffect(() => {
     const txnData = dummyTxnData();
@@ -66,12 +72,12 @@ function TransactionContextProvider({ children }: { children: React.ReactNode })
     isOpen: isModalOpen,
     isLoading: false,
     selectedTxnId,
-    openModal: async (id = '') => {
+    openModal: async (id = "") => {
       setSelectedTxnId(id);
       setIsModalOpen(true);
     },
     closeModal: async () => {
-      setSelectedTxnId('');
+      setSelectedTxnId("");
       setIsModalOpen(false);
     },
   };
@@ -91,12 +97,17 @@ function TransactionContextProvider({ children }: { children: React.ReactNode })
     // return this if there are no search params
     if (Object.keys(searchParams).length) {
       if (searchParams.type) {
-        filteredTransactions = transactions.filter((transaction) => transaction.type === searchParams.type);
+        filteredTransactions = transactions.filter(
+          (transaction) => transaction.type === searchParams.type,
+        );
       } else if (searchParams.startDate && searchParams.endDate) {
         const startDate = new Date(searchParams.startDate);
         const endDate = new Date(searchParams.endDate);
         filteredTransactions = transactions.filter((transaction) => {
-          return new Date(transaction.createdAt) >= new Date(startDate) && new Date(transaction.createdAt) <= new Date(endDate);
+          return (
+            new Date(transaction.createdAt) >= new Date(startDate) &&
+            new Date(transaction.createdAt) <= new Date(endDate)
+          );
         });
       }
     }
@@ -110,12 +121,16 @@ function TransactionContextProvider({ children }: { children: React.ReactNode })
   }
 
   async function deleteTransaction(id: number) {
-    const updatedTransactions = transactions.filter((transaction) => transaction.id !== id);
+    const updatedTransactions = transactions.filter(
+      (transaction) => transaction.id !== id,
+    );
     setTransactions(updatedTransactions);
   }
 
   async function updateTransaction(transaction: Transaction) {
-    const updatedTransactions = transactions.map((t) => (t.id === transaction.id ? transaction : t));
+    const updatedTransactions = transactions.map((t) =>
+      t.id === transaction.id ? transaction : t,
+    );
     setTransactions(updatedTransactions);
   }
 
@@ -132,7 +147,11 @@ function TransactionContextProvider({ children }: { children: React.ReactNode })
     updateTransaction,
     fetchTransactionById,
   };
-  return <TransactionContext.Provider value={value}>{children}</TransactionContext.Provider>;
+  return (
+    <TransactionContext.Provider value={value}>
+      {children}
+    </TransactionContext.Provider>
+  );
 }
 
 export default TransactionContextProvider;

@@ -1,5 +1,8 @@
-import { Currency } from 'api/UserAPI';
-import { TRANSACTION_SPLIT_TYPES, TRANSACTION_TYPES } from 'constants/txnConstants';
+import type { Currency } from "api/UserAPI";
+import type {
+  TRANSACTION_SPLIT_TYPES,
+  TRANSACTION_TYPES,
+} from "constants/txnConstants";
 
 export interface Transaction {
   id: number;

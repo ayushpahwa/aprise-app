@@ -1,9 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { GroupType } from 'api/GroupsAPI';
-import { generateSentenceCase, iconForGroupType } from 'utils/GroupUtils';
-import { Colors } from 'constants/styles';
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import type { GroupType } from "api/GroupsAPI";
+import { generateSentenceCase, iconForGroupType } from "utils/GroupUtils";
+import { Colors } from "constants/styles";
 
 interface Props {
   groupType: GroupType;
@@ -11,7 +11,7 @@ interface Props {
   onSelectChange: (groupType: GroupType) => void;
 }
 
-const GroupTypeCard = ({ groupType, selected, onSelectChange }: Props) => {
+const GroupTypeCard = ({ groupType, onSelectChange, selected }: Props) => {
   const iconName = iconForGroupType(groupType);
 
   return (
@@ -21,7 +21,11 @@ const GroupTypeCard = ({ groupType, selected, onSelectChange }: Props) => {
       }}
     >
       <View style={[styles.container, selected && styles.selected]}>
-        <MaterialCommunityIcons size={24} name={iconName} style={styles.groupIcon} />
+        <MaterialCommunityIcons
+          name={iconName}
+          size={24}
+          style={styles.groupIcon}
+        />
         <Text>{generateSentenceCase(groupType)}</Text>
       </View>
     </TouchableOpacity>
@@ -34,12 +38,12 @@ const styles = StyleSheet.create({
   container: {
     height: 100,
     width: 100,
-    borderBlockColor: 'black',
+    borderBlockColor: "black",
     borderWidth: 0.8,
     borderRadius: 24,
     padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     gap: 8,
   },
   selected: {

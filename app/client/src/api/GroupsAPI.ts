@@ -1,13 +1,16 @@
-import { Transaction } from 'constants/types/txnTypes';
-import Api from './Api';
-import { Currency } from './UserAPI';
-import { ApiResponse } from 'constants/types/apiTypes';
-import { TRANSACTION_SPLIT_TYPES, TRANSACTION_TYPES } from 'constants/txnConstants';
+import type { Transaction } from "constants/types/txnTypes";
+import Api from "./Api";
+import type { Currency } from "./UserAPI";
+import type { ApiResponse } from "constants/types/apiTypes";
+import type {
+  TRANSACTION_SPLIT_TYPES,
+  TRANSACTION_TYPES,
+} from "constants/txnConstants";
 
 export enum GroupType {
-  PERSONAL = 'PERSONAL',
-  HOME = 'HOME',
-  TRAVEL = 'TRAVEL',
+  PERSONAL = "PERSONAL",
+  HOME = "HOME",
+  TRAVEL = "TRAVEL",
 }
 
 export interface Group {
@@ -43,24 +46,34 @@ export interface CreateTransactionDTO {
 }
 
 export class GroupsAPI extends Api {
-  static BASE = '/groups';
+  static BASE = "/groups";
 
-  static TXN_BASE = '/transactions';
+  static TXN_BASE = "/transactions";
 
   static async getGroups(): Promise<ApiResponse<Group[]>> {
     return Api.get(GroupsAPI.BASE);
   }
 
-  static async createGroup(payload: CreateGroupDTO): Promise<ApiResponse<Group>> {
+  static async createGroup(
+    payload: CreateGroupDTO,
+  ): Promise<ApiResponse<Group>> {
     return Api.post(GroupsAPI.BASE, payload);
   }
 
-  static async getGroupTransactions(groupId: number): Promise<ApiResponse<Transaction[]>> {
+  static async getGroupTransactions(
+    groupId: number,
+  ): Promise<ApiResponse<Transaction[]>> {
     return Api.get(`${GroupsAPI.BASE}/${groupId}${GroupsAPI.TXN_BASE}`);
   }
 
-  static async createTransaction(groupId: number, payload: CreateTransactionDTO): Promise<ApiResponse<Transaction>> {
-    return Api.post(`${GroupsAPI.BASE}/${groupId}${GroupsAPI.TXN_BASE}`, payload);
+  static async createTransaction(
+    groupId: number,
+    payload: CreateTransactionDTO,
+  ): Promise<ApiResponse<Transaction>> {
+    return Api.post(
+      `${GroupsAPI.BASE}/${groupId}${GroupsAPI.TXN_BASE}`,
+      payload,
+    );
   }
 }
 

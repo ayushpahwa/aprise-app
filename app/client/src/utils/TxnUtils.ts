@@ -1,10 +1,19 @@
-import { CreateTransactionDTO, Group } from 'api/GroupsAPI';
-import { CreateTransactionFormInput } from 'components/TransactionModal';
-import { TRANSACTION_SPLIT_TYPES, TRANSACTION_TYPES } from 'constants/txnConstants';
+import type { CreateTransactionDTO, Group } from "api/GroupsAPI";
+import type { CreateTransactionFormInput } from "components/TransactionModal";
+import {
+  TRANSACTION_SPLIT_TYPES,
+  TRANSACTION_TYPES,
+} from "constants/txnConstants";
 
-export const generatePayloadForCreateTransaction = ({ formInput, groups }: { formInput: CreateTransactionFormInput; groups: Group[] }) => {
+export const generatePayloadForCreateTransaction = ({
+  formInput,
+  groups,
+}: {
+  formInput: CreateTransactionFormInput;
+  groups: Group[];
+}) => {
   const { amount, description, groupIndex, transactionType } = formInput;
-  const { id: group_id, currencies } = groups[groupIndex > 0 ? groupIndex : 0];
+  const { currencies, id: group_id } = groups[groupIndex > 0 ? groupIndex : 0];
   const { id: currency_id } = currencies[0];
   // remove the sign and convert to cents/paise
   const parsedAmount = Number(amount.toString().slice(2)) * 100;
@@ -20,8 +29,11 @@ export const generatePayloadForCreateTransaction = ({ formInput, groups }: { for
   return { group_id, payload };
 };
 
-export const generateMemberPayload = (transactionType: TRANSACTION_TYPES, members: number[]) => {
-  const key = transactionType === TRANSACTION_TYPES.INCOME ? 'input' : 'output';
+export const generateMemberPayload = (
+  transactionType: TRANSACTION_TYPES,
+  members: number[],
+) => {
+  const key = transactionType === TRANSACTION_TYPES.INCOME ? "input" : "output";
   return {
     [key]: members.map((memberId) => ({ memberId })),
   };

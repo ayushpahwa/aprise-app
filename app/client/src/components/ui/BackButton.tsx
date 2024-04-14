@@ -1,6 +1,6 @@
-import React from 'react';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import React from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 interface IProps {
   onPress?: () => void;
@@ -15,7 +15,9 @@ const BackButton = ({ onPress }: IProps) => {
       navigation.goBack();
     }
   };
-  return <MaterialCommunityIcons size={24} name="arrow-left" onPress={handleBack} />;
+  return (
+    <MaterialCommunityIcons name="arrow-left" onPress={handleBack} size={24} />
+  );
 };
 
 export default BackButton;

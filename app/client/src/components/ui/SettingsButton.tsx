@@ -1,12 +1,14 @@
-import React from 'react';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface IProps {
   onPress: () => void;
 }
 
 const SettingsButton = ({ onPress }: IProps) => {
-  return <MaterialCommunityIcons size={24} name="cog-outline" onPress={onPress} />;
+  return (
+    <MaterialCommunityIcons name="cog-outline" onPress={onPress} size={24} />
+  );
 };
 
 export default SettingsButton;

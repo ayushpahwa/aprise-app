@@ -1,8 +1,13 @@
-import { useMutation } from '@tanstack/react-query';
-import CustomTextInput from 'components/ui/CustomTextInput';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Alert, StyleSheet, View } from 'react-native';
-import { emailValidationConfig, passwordValidationConfig } from 'constants/formValidationConfigs';
+import React from "react";
+import { useMutation } from "@tanstack/react-query";
+import CustomTextInput from "components/ui/CustomTextInput";
+import type { SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { Alert, StyleSheet, View } from "react-native";
+import {
+  emailValidationConfig,
+  passwordValidationConfig,
+} from "constants/formValidationConfigs";
 import {
   AUTH_ALERT_LOGIN_ERROR_MESSAGE,
   AUTH_ALERT_LOGIN_ERROR_TITLE,
@@ -10,10 +15,11 @@ import {
   AUTH_FORM_LOGIN_CTA_LABEL,
   AUTH_FORM_PASSWORD_LABEL,
   createMessage,
-} from 'constants/messages';
-import AuthApi, { LoginDTO } from 'api/AuthAPI';
-import { Button, Spinner } from '@ui-kitten/components';
-import { LoadingIndicator } from 'components/ui/LoadingIndicator';
+} from "constants/messages";
+import type { LoginDTO } from "api/AuthAPI";
+import AuthApi from "api/AuthAPI";
+import { Button } from "@ui-kitten/components";
+import { LoadingIndicator } from "components/ui/LoadingIndicator";
 
 export interface SignInFormInput {
   email: string;
@@ -21,8 +27,8 @@ export interface SignInFormInput {
 }
 
 const enum LoginFormFields {
-  email = 'email',
-  password = 'password',
+  email = "email",
+  password = "password",
 }
 
 interface Props {
@@ -32,10 +38,10 @@ interface Props {
 export const LoginForm = ({ onAuthenticate }: Props) => {
   const {
     control,
-    handleSubmit,
     formState: { errors },
+    handleSubmit,
   } = useForm<SignInFormInput>();
-  const { mutateAsync, isPending } = useMutation({
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: async (payload: LoginDTO) => {
       return await AuthApi.login(payload);
     },
@@ -43,34 +49,45 @@ export const LoginForm = ({ onAuthenticate }: Props) => {
       onAuthenticate(data.data.token);
     },
   });
-  const submitHandler: SubmitHandler<SignInFormInput> = async ({ email, password }) => {
+  const submitHandler: SubmitHandler<SignInFormInput> = async ({
+    email,
+    password,
+  }) => {
     try {
       if (errors && Object.keys(errors).length > 0) return;
       await mutateAsync({ email, password });
     } catch (error: any) {
-      Alert.alert(createMessage(AUTH_ALERT_LOGIN_ERROR_TITLE), createMessage(AUTH_ALERT_LOGIN_ERROR_MESSAGE));
+      Alert.alert(
+        createMessage(AUTH_ALERT_LOGIN_ERROR_TITLE),
+        createMessage(AUTH_ALERT_LOGIN_ERROR_MESSAGE),
+      );
     }
   };
   return (
     <View style={styles.form}>
       <CustomTextInput
         autoComplete="email"
-        name={LoginFormFields.email}
-        label={createMessage(AUTH_FORM_EMAIL_LABEL)}
-        keyboardType="email-address"
         control={control}
+        keyboardType="email-address"
+        label={createMessage(AUTH_FORM_EMAIL_LABEL)}
+        name={LoginFormFields.email}
         validationRules={emailValidationConfig}
       />
       <CustomTextInput
-        name={LoginFormFields.password}
-        label={createMessage(AUTH_FORM_PASSWORD_LABEL)}
-        secure
         control={control}
+        label={createMessage(AUTH_FORM_PASSWORD_LABEL)}
+        name={LoginFormFields.password}
+        secure
         validationRules={passwordValidationConfig}
       />
       {isPending && <LoadingIndicator style={styles.loadingIndicator} />}
       {!isPending && (
-        <Button onPress={handleSubmit(submitHandler)} style={styles.buttons} disabled={isPending} status="primary">
+        <Button
+          disabled={isPending}
+          onPress={handleSubmit(submitHandler)}
+          status="primary"
+          style={styles.buttons}
+        >
           {createMessage(AUTH_FORM_LOGIN_CTA_LABEL)}
         </Button>
       )}

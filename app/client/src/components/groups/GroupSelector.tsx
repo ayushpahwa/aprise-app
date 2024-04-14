@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { Control, Controller } from 'react-hook-form';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import { IndexPath, Select, SelectItem } from '@ui-kitten/components';
-import { Group } from 'api/GroupsAPI';
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import type { Control } from "react-hook-form";
+import { Controller } from "react-hook-form";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import type { IndexPath } from "@ui-kitten/components";
+import { Select, SelectItem } from "@ui-kitten/components";
+import type { Group } from "api/GroupsAPI";
 
 interface Props {
   control: Control<any>;
@@ -12,21 +14,23 @@ interface Props {
   disabled?: boolean;
 }
 
-const GroupSelector = ({ control, name, groups, disabled }: Props) => {
+const GroupSelector = ({ control, disabled, groups, name }: Props) => {
   return (
     <Controller
       control={control}
-      name={name}
       defaultValue={groups?.length ? 0 : null}
+      name={name}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <View>
-          <Text style={[styles.label, !!error && styles.labelInvalid]}>Group Selector</Text>
+          <Text style={[styles.label, !!error && styles.labelInvalid]}>
+            Group Selector
+          </Text>
           <Select
             disabled={disabled}
-            value={`${groups[value]?.name || ''}`}
             onSelect={(index) => onChange((index as IndexPath).row)}
             placeholder="Select a group"
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
+            value={`${groups[value]?.name || ""}`}
           >
             {groups.map((group) => (
               <SelectItem key={group.id} title={group.name} />

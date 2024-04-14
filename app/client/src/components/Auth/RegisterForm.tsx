@@ -1,8 +1,14 @@
-import { useMutation } from '@tanstack/react-query';
-import CustomTextInput from 'components/ui/CustomTextInput';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Alert, StyleSheet, View } from 'react-native';
-import { emailValidationConfig, nameValidationConfig, passwordValidationConfig } from 'constants/formValidationConfigs';
+import React from "react";
+import { useMutation } from "@tanstack/react-query";
+import CustomTextInput from "components/ui/CustomTextInput";
+import type { SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { Alert, StyleSheet, View } from "react-native";
+import {
+  emailValidationConfig,
+  nameValidationConfig,
+  passwordValidationConfig,
+} from "constants/formValidationConfigs";
 import {
   AUTH_ALERT_LOGIN_ERROR_TITLE,
   AUTH_ALERT_REGISTER_ERROR_MESSAGE,
@@ -12,12 +18,13 @@ import {
   AUTH_FORM_PASSWORD_LABEL,
   AUTH_FORM_SIGNUP_CTA_LABEL,
   createMessage,
-} from 'constants/messages';
-import AuthApi, { RegisterDTO } from 'api/AuthAPI';
-import { Button } from '@ui-kitten/components';
-import { LoadingIndicator } from 'components/ui/LoadingIndicator';
-import { CurrencyPicker } from 'components/ui/CurrencyPicker';
-import { CURRENCIES } from 'constants/txnConstants';
+} from "constants/messages";
+import type { RegisterDTO } from "api/AuthAPI";
+import AuthApi from "api/AuthAPI";
+import { Button } from "@ui-kitten/components";
+import { LoadingIndicator } from "components/ui/LoadingIndicator";
+import { CurrencyPicker } from "components/ui/CurrencyPicker";
+import { CURRENCIES } from "constants/txnConstants";
 
 export interface RegisterFormInput {
   fullName: string;
@@ -27,10 +34,10 @@ export interface RegisterFormInput {
 }
 
 const enum RegisterFormFields {
-  fullName = 'fullName',
-  email = 'email',
-  password = 'password',
-  defaultCurrencyIndex = 'defaultCurrencyIndex',
+  fullName = "fullName",
+  email = "email",
+  password = "password",
+  defaultCurrencyIndex = "defaultCurrencyIndex",
 }
 
 interface Props {
@@ -40,26 +47,34 @@ interface Props {
 export const RegisterForm = ({ onAuthenticate }: Props) => {
   const {
     control,
-    handleSubmit,
     formState: { errors },
+    handleSubmit,
   } = useForm<RegisterFormInput>();
-  const { mutateAsync, isPending } = useMutation({
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: async (payload: RegisterDTO) => {
       return await AuthApi.register(payload);
     },
     onSuccess: (data) => {
-      console.log('RegisterForm -> data', data);
+      console.log("RegisterForm -> data", data);
       onAuthenticate(data.data.token);
     },
   });
-  const submitHandler: SubmitHandler<RegisterFormInput> = async ({ email, password, fullName, defaultCurrencyIndex }) => {
+  const submitHandler: SubmitHandler<RegisterFormInput> = async ({
+    defaultCurrencyIndex,
+    email,
+    fullName,
+    password,
+  }) => {
     try {
       if (errors && Object.keys(errors).length > 0) return;
       const defaultCurrencyId = CURRENCIES[defaultCurrencyIndex].id;
       await mutateAsync({ email, password, fullName, defaultCurrencyId });
       console.log({ email, password, fullName, defaultCurrencyId });
     } catch (error: any) {
-      Alert.alert(createMessage(AUTH_ALERT_LOGIN_ERROR_TITLE), createMessage(AUTH_ALERT_REGISTER_ERROR_MESSAGE));
+      Alert.alert(
+        createMessage(AUTH_ALERT_LOGIN_ERROR_TITLE),
+        createMessage(AUTH_ALERT_REGISTER_ERROR_MESSAGE),
+      );
     }
   };
   return (
@@ -67,30 +82,39 @@ export const RegisterForm = ({ onAuthenticate }: Props) => {
       <CustomTextInput
         autoCapitalize="words"
         autoComplete="name"
-        name={RegisterFormFields.fullName}
-        label={createMessage(AUTH_FORM_FULLNAME_LABEL)}
         control={control}
+        label={createMessage(AUTH_FORM_FULLNAME_LABEL)}
+        name={RegisterFormFields.fullName}
         validationRules={nameValidationConfig}
       />
       <CustomTextInput
         autoComplete="email"
-        name={RegisterFormFields.email}
-        label={createMessage(AUTH_FORM_EMAIL_LABEL)}
-        keyboardType="email-address"
         control={control}
+        keyboardType="email-address"
+        label={createMessage(AUTH_FORM_EMAIL_LABEL)}
+        name={RegisterFormFields.email}
         validationRules={emailValidationConfig}
       />
       <CustomTextInput
-        name={RegisterFormFields.password}
-        label={createMessage(AUTH_FORM_PASSWORD_LABEL)}
-        secure
         control={control}
+        label={createMessage(AUTH_FORM_PASSWORD_LABEL)}
+        name={RegisterFormFields.password}
+        secure
         validationRules={passwordValidationConfig}
       />
-      <CurrencyPicker name={RegisterFormFields.defaultCurrencyIndex} control={control} label={createMessage(AUTH_FORM_DEFAULT_CURRENCY_LABEL)} />
+      <CurrencyPicker
+        control={control}
+        label={createMessage(AUTH_FORM_DEFAULT_CURRENCY_LABEL)}
+        name={RegisterFormFields.defaultCurrencyIndex}
+      />
       {isPending && <LoadingIndicator style={styles.loadingIndicator} />}
       {!isPending && (
-        <Button onPress={handleSubmit(submitHandler)} style={styles.buttons} disabled={isPending} status="primary">
+        <Button
+          disabled={isPending}
+          onPress={handleSubmit(submitHandler)}
+          status="primary"
+          style={styles.buttons}
+        >
           {createMessage(AUTH_FORM_SIGNUP_CTA_LABEL)}
         </Button>
       )}

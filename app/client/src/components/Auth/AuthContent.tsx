@@ -1,12 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { Colors } from '../../constants/styles';
-import { CardHandle } from 'components/ui/CardHandle';
-import { AUTH_CONTENT_SWITCH_MODE, AUTH_CONTENT_TITLE, createMessage } from 'constants/messages';
-import { LoginForm } from './LoginForm';
-import { RegisterForm } from './RegisterForm';
-import { Button } from '@ui-kitten/components';
-import { useContext, useState } from 'react';
-import { AuthContext } from 'store/AuthContext';
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Colors } from "../../constants/styles";
+import { CardHandle } from "components/ui/CardHandle";
+import {
+  AUTH_CONTENT_SWITCH_MODE,
+  AUTH_CONTENT_TITLE,
+  createMessage,
+} from "constants/messages";
+import { LoginForm } from "./LoginForm";
+import { RegisterForm } from "./RegisterForm";
+import { Button } from "@ui-kitten/components";
+import { useContext, useState } from "react";
+import { AuthContext } from "store/AuthContext";
 
 function AuthContent() {
   const { setToken } = useContext(AuthContext);
@@ -27,7 +32,9 @@ function AuthContent() {
   return (
     <View style={styles.authContent}>
       <CardHandle />
-      <Text style={styles.titleText}>{createMessage(() => AUTH_CONTENT_TITLE(isLogin))}</Text>
+      <Text style={styles.titleText}>
+        {createMessage(() => AUTH_CONTENT_TITLE(isLogin))}
+      </Text>
       {isLogin && <LoginForm onAuthenticate={onAuthenticate} />}
       {!isLogin && <RegisterForm onAuthenticate={onAuthenticate} />}
       <Button appearance="ghost" onPress={switchAuthModeHandler}>
@@ -41,13 +48,13 @@ export default AuthContent;
 
 const styles = StyleSheet.create({
   authContent: {
-    marginTop: 'auto',
-    height: 'auto',
+    marginTop: "auto",
+    height: "auto",
     padding: 32,
     borderRadius: 8,
     backgroundColor: Colors.background,
     elevation: 2,
-    shadowColor: 'black',
+    shadowColor: "black",
     shadowOffset: { width: 1, height: 1 },
     shadowOpacity: 0.35,
     shadowRadius: 4,
@@ -57,7 +64,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 24,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
   },
 });

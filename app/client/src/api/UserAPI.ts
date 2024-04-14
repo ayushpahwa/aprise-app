@@ -1,5 +1,5 @@
-import { AxiosPromise, AxiosResponse } from 'axios';
-import Api from './Api';
+import type { AxiosResponse } from "axios";
+import Api from "./Api";
 
 export interface Currency {
   id: number;
@@ -24,7 +24,7 @@ export interface UserProfileResponse {
 }
 
 class UserAPI extends Api {
-  static BASE = '/users';
+  static BASE = "/users";
   static GET_USER = `${this.BASE}/profile`;
 
   static async getUserProfile(): Promise<AxiosResponse<UserProfileResponse>> {

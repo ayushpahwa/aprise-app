@@ -1,21 +1,28 @@
-import { View, Text, StyleSheet } from 'react-native';
-import React, { useEffect, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import GroupsAPI, { Group, GroupType } from 'api/GroupsAPI';
-import { QUERY_KEYS } from 'api/ApiConstants';
-import SearchInput from 'components/ui/SearchInput';
-import { CREATE_GROUP_TITLE, PLACEHOLDER_SEARCH_GROUPS, YOUR_GROUPS_TITLE, createMessage } from 'constants/messages';
-import CreateGroupCard from 'components/groups/GroupTypeSelector';
-import { defaultStyles } from 'constants/styles';
-import GroupsList from 'components/groups/GroupsList';
-import { RootStackNavigationType, ScreenNamesEnum } from 'constants/types/navigationTypes';
-import { useNavigation } from '@react-navigation/native';
-import { validateResponse } from 'utils/ApiUtils';
+import React, { useEffect, useMemo } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import type { Group, GroupType } from "api/GroupsAPI";
+import GroupsAPI from "api/GroupsAPI";
+import { QUERY_KEYS } from "api/ApiConstants";
+import SearchInput from "components/ui/SearchInput";
+import {
+  CREATE_GROUP_TITLE,
+  PLACEHOLDER_SEARCH_GROUPS,
+  YOUR_GROUPS_TITLE,
+  createMessage,
+} from "constants/messages";
+import CreateGroupCard from "components/groups/GroupTypeSelector";
+import { defaultStyles } from "constants/styles";
+import GroupsList from "components/groups/GroupsList";
+import type { RootStackNavigationType } from "constants/types/navigationTypes";
+import { ScreenNamesEnum } from "constants/types/navigationTypes";
+import { useNavigation } from "@react-navigation/native";
+import { validateResponse } from "utils/ApiUtils";
 
 const Groups = () => {
   const navigation = useNavigation<RootStackNavigationType>();
-  const [searchText, setSearchText] = React.useState('');
-  const { isLoading, data, refetch } = useQuery({
+  const [searchText, setSearchText] = React.useState("");
+  const { data, isLoading, refetch } = useQuery({
     queryKey: [QUERY_KEYS.FETCH_GROUPS],
     queryFn: GroupsAPI.getGroups,
     enabled: true,
@@ -24,7 +31,7 @@ const Groups = () => {
 
   // refetch groups on focus
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       refetch();
     });
     return unsubscribe;
@@ -45,9 +52,18 @@ const Groups = () => {
 
   return (
     <View style={styles.container}>
-      <SearchInput value={searchText} onChangeText={setSearchText} placeholder={createMessage(PLACEHOLDER_SEARCH_GROUPS)} />
-      <CreateGroupCard title={createMessage(CREATE_GROUP_TITLE)} onSelectChange={onSelectChange} />
-      <Text style={defaultStyles.titleText}>{createMessage(YOUR_GROUPS_TITLE)}</Text>
+      <SearchInput
+        onChangeText={setSearchText}
+        placeholder={createMessage(PLACEHOLDER_SEARCH_GROUPS)}
+        value={searchText}
+      />
+      <CreateGroupCard
+        onSelectChange={onSelectChange}
+        title={createMessage(CREATE_GROUP_TITLE)}
+      />
+      <Text style={defaultStyles.titleText}>
+        {createMessage(YOUR_GROUPS_TITLE)}
+      </Text>
       <GroupsList groupsList={groupsList} isLoading={isLoading} />
     </View>
   );

@@ -1,6 +1,11 @@
-import { createContext, useState } from 'react';
-import { storeDataToLocalStore, LocalStoreKeys, removeDataFromLocalStore } from './localStore';
-import Api from 'api/Api';
+import React from "react";
+import { createContext, useState } from "react";
+import {
+  storeDataToLocalStore,
+  LocalStoreKeys,
+  removeDataFromLocalStore,
+} from "./localStore";
+import Api from "api/Api";
 
 export interface AuthContextType {
   token: string;
@@ -10,14 +15,14 @@ export interface AuthContextType {
 }
 
 export const AuthContext = createContext<AuthContextType>({
-  token: '',
+  token: "",
   setToken: () => {},
   removeToken: () => {},
   isAuthenticated: false,
 });
 
 function AuthContextProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string>('');
+  const [token, setToken] = useState<string>("");
   const isAuthenticated = token.length > 0;
 
   const setTokenHandler = (token: string, save = true) => {
@@ -33,7 +38,7 @@ function AuthContextProvider({ children }: { children: React.ReactNode }) {
   };
 
   const removeTokenHandler = () => {
-    setToken('');
+    setToken("");
     removeDataFromLocalStore(LocalStoreKeys.AUTH_TOKEN);
   };
 

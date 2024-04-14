@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import { Input } from '@ui-kitten/components';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { StyleSheet } from "react-native";
+import React from "react";
+import { Input } from "@ui-kitten/components";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const SearchIcon = () => <MaterialCommunityIcons size={20} name="magnify" />;
+const SearchIcon = () => <MaterialCommunityIcons name="magnify" size={20} />;
 
 interface Props {
   placeholder?: string;
@@ -11,8 +11,17 @@ interface Props {
   onChangeText: (text: string) => void;
 }
 
-const SearchInput = ({ placeholder, value, onChangeText }: Props) => {
-  return <Input style={styles.searchInput} placeholder={placeholder || ''} accessoryLeft={SearchIcon} size="large" value={value} onChangeText={onChangeText} />;
+const SearchInput = ({ onChangeText, placeholder, value }: Props) => {
+  return (
+    <Input
+      accessoryLeft={SearchIcon}
+      onChangeText={onChangeText}
+      placeholder={placeholder || ""}
+      size="large"
+      style={styles.searchInput}
+      value={value}
+    />
+  );
 };
 
 export default SearchInput;
@@ -21,6 +30,6 @@ const styles = StyleSheet.create({
   searchInput: {
     marginBottom: 16,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });

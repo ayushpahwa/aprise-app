@@ -1,7 +1,9 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native';
-import { TRANSACTION_TYPES } from 'constants/txnConstants';
-import { Colors } from 'constants/styles';
-import { Control, Controller } from 'react-hook-form';
+import React from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import { TRANSACTION_TYPES } from "constants/txnConstants";
+import { Colors } from "constants/styles";
+import type { Control } from "react-hook-form";
+import { Controller } from "react-hook-form";
 
 interface Props {
   name: string;
@@ -12,11 +14,20 @@ interface Props {
 
 const amountRegex = /^(\+|-)\s(\d+(\.\d{0,2})?)?$/;
 
-export const TransactionAmountInput = ({ name, transactionType, control }: Props) => {
-  const sign = !!transactionType && transactionType === TRANSACTION_TYPES.INCOME ? '+' : '-';
+export const TransactionAmountInput = ({
+  control,
+  name,
+  transactionType,
+}: Props) => {
+  const sign =
+    !!transactionType && transactionType === TRANSACTION_TYPES.INCOME
+      ? "+"
+      : "-";
   return (
     <Controller
       control={control}
+      defaultValue={`${sign} 0`}
+      name={name}
       render={({ field: { onChange, value } }) => {
         const handleTextChange = (rawText: string) => {
           if (value === rawText) return;
@@ -26,7 +37,7 @@ export const TransactionAmountInput = ({ name, transactionType, control }: Props
             return;
           }
 
-          if (rawText === '' || rawText === `${sign} `) {
+          if (rawText === "" || rawText === `${sign} `) {
             onChange(`${sign} 0`);
             return;
           }
@@ -37,36 +48,40 @@ export const TransactionAmountInput = ({ name, transactionType, control }: Props
             // remove the 0 from the value
             let output = rawText.slice(3);
 
-            if (output === '.') {
-              output = '0.';
+            if (output === ".") {
+              output = "0.";
             }
 
             onChange(`${sign} ${output}`);
             return;
           }
 
-          const text = rawText.split(' ')[1];
+          const text = rawText.split(" ")[1];
           onChange(`${sign} ${text}`);
         };
         return (
           <View style={styles.container}>
             <View style={styles.symbolCard}>
-              <Text style={{ fontWeight: '600' }}>INR</Text>
+              <Text style={{ fontWeight: "600" }}>INR</Text>
             </View>
-            <TextInput caretHidden={true} style={styles.input} keyboardType="decimal-pad" value={value} onChangeText={handleTextChange} />
+            <TextInput
+              caretHidden
+              keyboardType="decimal-pad"
+              onChangeText={handleTextChange}
+              style={styles.input}
+              value={value}
+            />
           </View>
         );
       }}
-      name={name}
-      defaultValue={`${sign} 0`}
     />
   );
 };
 
 const styles = StyleSheet.create({
   symbolCard: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: Colors.accent_gray,
     borderRadius: 24,
     width: 72,
@@ -74,17 +89,17 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     borderWidth: 0.5,
     padding: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     height: 96,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   input: {
     fontSize: 48,
-    width: '70%',
-    textAlign: 'right',
+    width: "70%",
+    textAlign: "right",
   },
 });

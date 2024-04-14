@@ -1,19 +1,18 @@
-import { TransactionsList } from 'components/TransactionList';
-import { useContext, useMemo, useState } from 'react';
-import { View } from 'react-native';
-import { Transaction, TransactionContext } from 'store/TransactionsContext';
+import React from "react";
+import { useMemo, useState } from "react";
+import { TransactionsList } from "components/TransactionList";
+import { View } from "react-native";
+import type { Transaction } from "constants/types/txnTypes";
 
 const Details = () => {
-  const { fetchTransactions } = useContext(TransactionContext);
   const [transactions, setTransactions] = useState([] as Transaction[]);
   useMemo(async () => {
-    const transactions = await fetchTransactions({});
-    setTransactions(transactions);
-  }, [fetchTransactions]);
+    setTransactions([]);
+  }, []);
 
   return (
     <View>
-      <TransactionsList transactions={transactions} />
+      <TransactionsList isLoading={false} transactions={transactions} />
     </View>
   );
 };
