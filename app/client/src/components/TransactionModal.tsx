@@ -1,121 +1,113 @@
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
-import { useContext, useMemo, useState } from 'react';
-import { View, Text, Modal, Button, StyleSheet, TextInput } from 'react-native';
-import { Transaction, TransactionContext } from 'store/TransactionsContext';
+import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView } from 'react-native';
 import { TRANSACTION_TYPES } from 'constants/txnConstants';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { TransactionAmountInput } from './TransactionAmountInput';
+import { useNavigation } from '@react-navigation/native';
+import { Button, ButtonGroup } from '@ui-kitten/components';
+import { CardHandle } from './ui/CardHandle';
+import { Colors, defaultStyles } from 'constants/styles';
+import { Controller, useForm } from 'react-hook-form';
+import CustomTextInput from './ui/CustomTextInput';
+import { useEffect } from 'react';
+
+export interface CreateTransactionFormInput {
+  transactionType: string;
+  amount: number;
+  description: string;
+  groupId: number;
+}
+
+export enum TransactionFields {
+  transactionType = 'transactionType',
+  amount = 'amount',
+  description = 'description',
+}
 
 const TransactionTypes = [TRANSACTION_TYPES.EXPENSE, TRANSACTION_TYPES.INCOME];
 
-const validateInputs = (amount: string, description: string) => {
-  // check amount validity, it should be a number and greater than 0
-  const isAmountValid = !isNaN(parseFloat(amount)) && parseFloat(amount) > 0;
-  return amount.length > 0 && description.length > 0 && isAmountValid;
-};
-
 export const TransactionModal = () => {
-  const { ui, createTransaction, updateTransaction, fetchTransactionById } = useContext(TransactionContext);
-  const { isOpen, closeModal } = ui;
-  const [transactionTypeIndex, setTransactionTypeIndex] = useState(0);
-  const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState('');
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | undefined>(undefined);
-  useMemo(async () => {
-    const mode = ui.selectedTxnId.length > 0 ? 'edit' : 'create';
-    const fetchedTransaction = mode === 'edit' ? await fetchTransactionById(parseInt(ui.selectedTxnId)) : undefined;
-    if (fetchedTransaction) {
-      setDescription(fetchedTransaction.description);
-      setAmount(fetchedTransaction.amount.toString());
-      setTransactionTypeIndex(fetchedTransaction.type === TRANSACTION_TYPES.EXPENSE ? 0 : 1);
-    }
-    setSelectedTransaction(fetchedTransaction);
-  }, [fetchTransactionById, ui.selectedTxnId]);
-  const resetInputs = () => {
-    setDescription('');
-    setAmount('');
-    setTransactionTypeIndex(0);
-    setSelectedTransaction(undefined);
+  const navigation = useNavigation();
+  const handleModalClose = () => {
+    navigation.goBack();
   };
-  const handleSave = async () => {
-    if (!validateInputs(amount, description)) return;
-    // save transaction
-    await createTransaction({
-      type: TransactionTypes[transactionTypeIndex],
-      description,
-      amount: parseFloat(amount),
-      category: 'General',
-    });
-    handleClose();
-  };
-  const handleUpdate = async () => {
-    if (!validateInputs(amount, description) || !selectedTransaction) return;
-    // update transaction
-    await updateTransaction({
-      ...selectedTransaction,
-      type: TransactionTypes[transactionTypeIndex],
-      description,
-      amount: parseFloat(amount),
-    });
-    handleClose();
-  };
-  const handleClose = () => {
-    resetInputs();
-    closeModal();
-  };
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+    getValues,
+  } = useForm<CreateTransactionFormInput>();
+
+  const watchTransactionType = watch(TransactionFields.transactionType);
+
+  // update the sign of the amount based on the transaction type
+  useEffect(() => {
+    if (!watchTransactionType) return;
+
+    const sign = watchTransactionType === TRANSACTION_TYPES.INCOME ? '+' : '-';
+    const amount = getValues(TransactionFields.amount).toString();
+    const newAmount = `${sign} ${amount.slice(2)}`;
+    setValue(TransactionFields.amount, newAmount as any);
+  }, [watchTransactionType]);
+
   return (
-    <Modal visible={isOpen} onDismiss={closeModal} animationType="slide" presentationStyle="pageSheet">
-      <View style={styles.modal}>
-        <Text style={styles.modalTitle}>Record your transaction</Text>
-        <View style={styles.formContainer}>
-          <SegmentedControl
-            values={TransactionTypes}
-            selectedIndex={transactionTypeIndex}
-            onChange={() => {
-              setTransactionTypeIndex(transactionTypeIndex === 0 ? 1 : 0);
-            }}
-          />
-          <TextInput style={styles.input} placeholder="Description" value={description} onChangeText={setDescription} />
-          <TransactionAmountInput transactionType={TransactionTypes[transactionTypeIndex]} amount={amount} onChange={setAmount} />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button title="Close" onPress={handleClose} />
-          {!!selectedTransaction ? (
-            <Button disabled={!validateInputs(amount, description)} title="Update" onPress={handleUpdate} />
-          ) : (
-            <Button disabled={!validateInputs(amount, description)} title="Save" onPress={handleSave} />
-          )}
-        </View>
+    <View style={styles.container}>
+      <CardHandle />
+      <View style={styles.header}>
+        <Button appearance="ghost" style={styles.cancelButton} onPress={handleModalClose}>
+          Cancel
+        </Button>
+        <Text style={[defaultStyles.titleText, styles.modalTitle]}>Record your transaction</Text>
       </View>
-    </Modal>
+      <KeyboardAvoidingView style={styles.formContainer} behavior="padding">
+        <Controller
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <SegmentedControl
+              values={TransactionTypes}
+              selectedIndex={TransactionTypes.indexOf(value as TRANSACTION_TYPES)}
+              onChange={(event) => onChange(TransactionTypes[event.nativeEvent.selectedSegmentIndex])}
+            />
+          )}
+          name={TransactionFields.transactionType}
+          defaultValue={TransactionTypes[0]}
+        />
+        <TransactionAmountInput transactionType={watchTransactionType} control={control} name={TransactionFields.amount} />
+        <CustomTextInput control={control} name={TransactionFields.description} label="Description" />
+        <Button onPress={handleModalClose}>Save</Button>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  modal: {
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cancelButton: {
+    width: 'auto',
+  },
+  container: {
     flex: 1,
-    padding: 24,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 12,
+    backgroundColor: Colors.background,
+    marginTop: 88,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
   },
   modalTitle: {
+    marginTop: 16,
     fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    color: 'white',
   },
   formContainer: {
+    padding: 24,
     flex: 1,
     gap: 12,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 'auto',
-    marginBottom: 24,
-  },
   input: {
-    backgroundColor: 'white',
+    borderWidth: 0.5,
     padding: 12,
     borderRadius: 8,
     marginBottom: 12,
