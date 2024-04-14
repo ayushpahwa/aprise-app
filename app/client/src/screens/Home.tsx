@@ -34,7 +34,7 @@ const Home = () => {
         <View style={styles.balanceContainer}>
           <Text style={styles.labelText}>Your current balance:</Text>
           <Text style={styles.currencyText}>
-            {currency} {accountBalance}
+            {currency} {accountBalance / 100}
           </Text>
         </View>
       </Card>
