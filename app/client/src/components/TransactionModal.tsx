@@ -1,46 +1,62 @@
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
 import { View, Text, StyleSheet, TextInput, KeyboardAvoidingView } from 'react-native';
-import { TRANSACTION_TYPES } from 'constants/txnConstants';
+import { TRANSACTION_SPLIT_TYPES, TRANSACTION_TYPES } from 'constants/txnConstants';
 import { TransactionAmountInput } from './TransactionAmountInput';
 import { useNavigation } from '@react-navigation/native';
-import { Button, ButtonGroup } from '@ui-kitten/components';
+import { Button, ButtonGroup, ProgressBar } from '@ui-kitten/components';
 import { CardHandle } from './ui/CardHandle';
 import { Colors, defaultStyles } from 'constants/styles';
 import { Controller, useForm } from 'react-hook-form';
 import CustomTextInput from './ui/CustomTextInput';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import GroupSelector from './groups/GroupSelector';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { QUERY_KEYS } from 'api/ApiConstants';
+import GroupsAPI, { CreateTransactionDTO } from 'api/GroupsAPI';
+import { validateResponse } from 'utils/ApiUtils';
+import { LoadingIndicator } from './ui/LoadingIndicator';
+import { generatePayloadForCreateTransaction } from 'utils/TxnUtils';
+import Toast from 'react-native-toast-message';
 
 export interface CreateTransactionFormInput {
-  transactionType: string;
+  transactionType: TRANSACTION_TYPES;
   amount: number;
   description: string;
-  groupId: number;
+  groupIndex: number;
 }
 
 export enum TransactionFields {
   transactionType = 'transactionType',
   amount = 'amount',
   description = 'description',
-  groupId = 'groupId',
+  groupIndex = 'groupIndex',
 }
 
 const TransactionTypes = [TRANSACTION_TYPES.EXPENSE, TRANSACTION_TYPES.INCOME];
 
 export const TransactionModal = () => {
   const navigation = useNavigation();
+  const {
+    data: groupsResponse,
+    isLoading: fetchingGroups,
+    isError: fetchGroupsError,
+  } = useQuery({
+    queryKey: [QUERY_KEYS.FETCH_GROUPS],
+    queryFn: GroupsAPI.getGroups,
+  });
+
+  console.log(groupsResponse, fetchingGroups, fetchGroupsError);
+
+  const groups = useMemo(
+    () => (!fetchingGroups && validateResponse(groupsResponse) ? groupsResponse?.data || [] : []),
+    [groupsResponse, fetchingGroups, fetchGroupsError],
+  );
+
   const handleModalClose = () => {
     navigation.goBack();
   };
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
-    getValues,
-  } = useForm<CreateTransactionFormInput>();
+  const { control, handleSubmit, watch, setValue, getValues } = useForm<CreateTransactionFormInput>();
 
   const watchTransactionType = watch(TransactionFields.transactionType);
 
@@ -53,6 +69,31 @@ export const TransactionModal = () => {
     const newAmount = `${sign} ${amount.slice(2)}`;
     setValue(TransactionFields.amount, newAmount as any);
   }, [watchTransactionType]);
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async ({ group_id, payload }: { group_id: number; payload: CreateTransactionDTO }) => {
+      return await GroupsAPI.createTransaction(group_id, payload);
+    },
+    onSuccess: (data) => {
+      try {
+        if (validateResponse(data)) {
+          Toast.show({ type: 'success', text1: 'Success', text2: 'Transaction created successfully' });
+          handleModalClose();
+        } else {
+          const message = data?.responseMeta?.error?.message || 'Failed to create transaction';
+          Toast.show({ type: 'error', text1: 'Error', text2: message });
+        }
+      } catch (error: any) {
+        const message = data?.responseMeta?.error?.message || 'Failed to create transaction';
+        Toast.show({ type: 'error', text1: 'Error', text2: message });
+      }
+    },
+  });
+
+  const submitHandler = async (formInput: CreateTransactionFormInput) => {
+    const data: { group_id: number; payload: CreateTransactionDTO } = generatePayloadForCreateTransaction({ formInput, groups });
+    await mutateAsync(data);
+  };
 
   return (
     <View style={styles.container}>
@@ -77,9 +118,10 @@ export const TransactionModal = () => {
           defaultValue={TransactionTypes[0]}
         />
         <TransactionAmountInput transactionType={watchTransactionType} control={control} name={TransactionFields.amount} />
-        <GroupSelector control={control} name={TransactionFields.groupId} />
+        <GroupSelector control={control} name={TransactionFields.groupIndex} groups={groups} disabled={fetchingGroups || fetchGroupsError} />
         <CustomTextInput control={control} name={TransactionFields.description} label="Description" />
-        <Button onPress={handleModalClose}>Save</Button>
+        {isPending && <LoadingIndicator style={styles.loadingIndicator} />}
+        {!isPending && <Button onPress={handleSubmit(submitHandler)}>Save</Button>}
       </KeyboardAvoidingView>
     </View>
   );
@@ -114,5 +156,8 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     marginBottom: 12,
+  },
+  loadingIndicator: {
+    marginTop: 12,
   },
 });
