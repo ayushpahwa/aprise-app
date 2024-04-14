@@ -11,6 +11,7 @@ import ManageGroups from './Groups/ManageGroups';
 import { RootStackParamList, ScreenNamesEnum } from 'constants/types/navigationTypes';
 import GroupDetails from './Groups/GroupDetails';
 import { TransactionModal } from 'components/TransactionModal';
+import Toast from 'react-native-toast-message';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -35,7 +36,12 @@ export function RootStack() {
 
   if (checkingAuth) return null;
 
-  return isAuthenticated ? <AuthenticatedStack /> : <AuthStack />;
+  return (
+    <>
+      {isAuthenticated ? <AuthenticatedStack /> : <AuthStack />}
+      <Toast />
+    </>
+  );
 }
 
 function AuthStack() {
