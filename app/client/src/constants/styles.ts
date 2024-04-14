@@ -21,7 +21,8 @@ export const defaultStyles = StyleSheet.create({
     marginBottom: 16,
   },
   topCard: {
-    paddingVertical: 24,
+    paddingTop: 48,
+    paddingBottom: 16,
     margin: -1,
     backgroundColor: Colors.accent_success,
     opacity: 0.7,
