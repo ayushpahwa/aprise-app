@@ -10,6 +10,7 @@ import { hideAsync } from 'expo-splash-screen';
 import ManageGroups from './Groups/ManageGroups';
 import { RootStackParamList, ScreenNamesEnum } from 'constants/types/navigationTypes';
 import GroupDetails from './Groups/GroupDetails';
+import { TransactionModal } from 'components/TransactionModal';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -55,22 +56,23 @@ function AuthenticatedStack() {
     <Stack.Navigator
       screenOptions={{
         contentStyle: { backgroundColor: Colors.background },
+        headerShown: false,
       }}
     >
-      <Stack.Screen
-        name={ScreenNamesEnum.ROOT_TABS}
-        component={Tabs}
-        options={{
-          headerShown: false,
-        }}
-      />
+      <Stack.Screen name={ScreenNamesEnum.ROOT_TABS} component={Tabs} />
       {/* Group screens */}
       <Stack.Screen name={ScreenNamesEnum.ROOT_MANAGE_GROUPS} component={ManageGroups} />
+      <Stack.Screen name={ScreenNamesEnum.ROOT_GROUP_DETAILS} component={GroupDetails} />
+      {/* Transaction modal */}
       <Stack.Screen
-        name={ScreenNamesEnum.ROOT_GROUP_DETAILS}
-        component={GroupDetails}
+        name={ScreenNamesEnum.ROOT_TRANSACTION_MODAL}
+        component={TransactionModal}
         options={{
+          presentation: 'transparentModal',
+          animation: 'slide_from_bottom',
           headerShown: false,
+          gestureDirection: 'vertical',
+          contentStyle: { backgroundColor: 'rgba(0, 0, 0, 0)' },
         }}
       />
     </Stack.Navigator>

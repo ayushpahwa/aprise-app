@@ -19,8 +19,6 @@ function DummyComponentForModalTab() {
 export const Tabs = () => {
   return (
     <>
-      <TransactionModal />
-
       <TransactionContextProvider>
         <Navigator
           screenOptions={{
@@ -51,7 +49,16 @@ export const Tabs = () => {
             component={DummyComponentForModalTab}
             options={{
               title: 'Add',
-              tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="plus" size={size} color={color} />,
+              tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="plus" size={size * 1.35} color={color} />,
+              headerShown: false,
+            }}
+            listeners={({ navigation }) => {
+              return {
+                tabPress: (e) => {
+                  e.preventDefault();
+                  navigation.navigate(ScreenNamesEnum.ROOT_TRANSACTION_MODAL);
+                },
+              };
             }}
           />
           <Screen
