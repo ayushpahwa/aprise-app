@@ -20,10 +20,16 @@ import { LoadingIndicator } from "./ui/LoadingIndicator";
 import { generatePayloadForCreateTransaction } from "utils/TxnUtils";
 import Toast from "react-native-toast-message";
 import { debug } from "loglevel";
+import {
+  CREATE_TXN_MODAL_TITLE,
+  CTA_CANCEL,
+  createMessage,
+} from "constants/messages";
+import { descValidationConfig } from "constants/formValidationConfigs";
 
 export interface CreateTransactionFormInput {
   transactionType: TRANSACTION_TYPES;
-  amount: number;
+  amount: string;
   description: string;
   groupIndex: number;
 }
@@ -62,8 +68,14 @@ export const TransactionModal = () => {
     navigation.goBack();
   };
 
-  const { control, getValues, handleSubmit, setValue, watch } =
-    useForm<CreateTransactionFormInput>();
+  const {
+    control,
+    formState: { errors },
+    getValues,
+    handleSubmit,
+    setValue,
+    watch,
+  } = useForm<CreateTransactionFormInput>();
 
   const watchTransactionType = watch(TransactionFields.transactionType);
 
@@ -111,6 +123,7 @@ export const TransactionModal = () => {
   });
 
   const submitHandler = async (formInput: CreateTransactionFormInput) => {
+    if (errors && Object.keys(errors).length > 0) return;
     const data: { group_id: number; payload: CreateTransactionDTO } =
       generatePayloadForCreateTransaction({ formInput, groups });
     await mutateAsync(data);
@@ -125,10 +138,10 @@ export const TransactionModal = () => {
           onPress={handleModalClose}
           style={styles.cancelButton}
         >
-          Cancel
+          {createMessage(CTA_CANCEL)}
         </Button>
         <Text style={[defaultStyles.titleText, styles.modalTitle]}>
-          Record your transaction
+          {createMessage(CREATE_TXN_MODAL_TITLE)}
         </Text>
       </View>
       <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
@@ -165,6 +178,7 @@ export const TransactionModal = () => {
           control={control}
           label="Description"
           name={TransactionFields.description}
+          validationRules={descValidationConfig}
         />
         {isPending && <LoadingIndicator style={styles.loadingIndicator} />}
         {!isPending && (

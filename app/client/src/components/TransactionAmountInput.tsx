@@ -4,6 +4,8 @@ import { TRANSACTION_TYPES } from "constants/txnConstants";
 import { Colors } from "constants/styles";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
+import { txnAmountValidationConfig } from "constants/formValidationConfigs";
+import { VALIDATION_AMOUNT_REQUIRED, createMessage } from "constants/messages";
 
 interface Props {
   name: string;
@@ -28,17 +30,17 @@ export const TransactionAmountInput = ({
       control={control}
       defaultValue={`${sign} 0`}
       name={name}
-      render={({ field: { onChange, value } }) => {
+      render={({ field: { onChange, value }, fieldState: { error } }) => {
         const handleTextChange = (rawText: string) => {
           if (value === rawText) return;
 
-          // do not allow multiple decimal points or any other special characters
-          if (!amountRegex.test(rawText)) {
+          if (rawText === "" || rawText === `${sign} `) {
+            onChange(`${sign} 0`);
             return;
           }
 
-          if (rawText === "" || rawText === `${sign} `) {
-            onChange(`${sign} 0`);
+          // do not allow multiple decimal points or any other special characters
+          if (!amountRegex.test(rawText)) {
             return;
           }
 
@@ -60,20 +62,30 @@ export const TransactionAmountInput = ({
           onChange(`${sign} ${text}`);
         };
         return (
-          <View style={styles.container}>
-            <View style={styles.symbolCard}>
-              <Text style={{ fontWeight: "600" }}>INR</Text>
+          <>
+            <View
+              style={[styles.container, !!error && styles.invalidContainer]}
+            >
+              <View style={styles.symbolCard}>
+                <Text style={{ fontWeight: "600" }}>INR</Text>
+              </View>
+              <TextInput
+                caretHidden
+                keyboardType="decimal-pad"
+                onChangeText={handleTextChange}
+                style={styles.input}
+                value={value}
+              />
             </View>
-            <TextInput
-              caretHidden
-              keyboardType="decimal-pad"
-              onChangeText={handleTextChange}
-              style={styles.input}
-              value={value}
-            />
-          </View>
+            {!!error && (
+              <Text style={styles.errorText}>
+                {error.message || createMessage(VALIDATION_AMOUNT_REQUIRED)}
+              </Text>
+            )}
+          </>
         );
       }}
+      rules={txnAmountValidationConfig}
     />
   );
 };
@@ -88,6 +100,9 @@ const styles = StyleSheet.create({
     padding: 12,
     opacity: 0.5,
   },
+  invalidContainer: {
+    borderColor: Colors.error500,
+  },
   container: {
     flexDirection: "row",
     borderWidth: 0.5,
@@ -101,5 +116,10 @@ const styles = StyleSheet.create({
     fontSize: 48,
     width: "70%",
     textAlign: "right",
+  },
+  errorText: {
+    color: Colors.error500,
+    marginTop: -12,
+    marginBottom: 12,
   },
 });

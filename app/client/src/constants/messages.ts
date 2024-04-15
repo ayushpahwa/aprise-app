@@ -17,6 +17,7 @@ export const ERROR_500 = () =>
   `We apologize, something went wrong. We're trying to fix things.`;
 export const SERVER_API_TIMEOUT_ERROR = () =>
   `Aprise server is taking too long to respond. Please try again after some time`;
+export const CTA_CANCEL = () => "Cancel";
 
 export const AUTH_CONTENT_TITLE = (isLoginMode?: boolean) =>
   !!isLoginMode ? "Log in" : "Tell us about yourself";
@@ -48,6 +49,9 @@ export const VALIDATION_INVALID_INPUT = () =>
   "Please check your entered credentials";
 export const VALIDATION_FULLNAME_REQUIRED = () => "Name is required";
 export const VALIDATION_DESC_REQUIRED = () => "Description is required";
+export const VALIDATION_AMOUNT_REQUIRED = () => "Amount is required";
+export const VALIDATION_AMOUNT_INVALID = () => "Invalid amount";
+export const VALIDATION_GROUP_NAME_REQUIRED = () => "Group is required";
 
 // Placeholder messages
 export const PLACEHOLDER_SEARCH_GROUPS = () => "Search Groups";
@@ -65,3 +69,6 @@ export const MANAGE_GROUP_SCREEN_TITLE = (editMode: boolean) =>
   !!editMode ? "Edit Group" : "Create Group";
 export const MANAGE_GROUP_CTA = (editMode: boolean) =>
   !!editMode ? "Update Group" : "Create Group";
+
+// Transactions
+export const CREATE_TXN_MODAL_TITLE = () => "Record your transaction";

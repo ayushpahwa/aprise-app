@@ -16,7 +16,7 @@ export const generatePayloadForCreateTransaction = ({
   const { currencies, id: group_id } = groups[groupIndex > 0 ? groupIndex : 0];
   const { id: currency_id } = currencies[0];
   // remove the sign and convert to cents/paise
-  const parsedAmount = Number(amount.toString().slice(2)) * 100;
+  const parsedAmount = Number(amount.slice(2)) * 100;
   const payload: CreateTransactionDTO = {
     amount: parsedAmount,
     category_id: 1,
