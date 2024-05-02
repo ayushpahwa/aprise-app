@@ -8,6 +8,7 @@ import in.aprise.finance.group.model.GroupMember;
 import in.aprise.finance.group.model.GroupType;
 import in.aprise.finance.group.model.dtos.CreateGroupRequestDTO;
 import in.aprise.finance.group.model.dtos.CreateTransactionDTO;
+import in.aprise.finance.group.model.dtos.GroupMemberResponseDTO;
 import in.aprise.finance.group.model.dtos.GroupResponseDTO;
 import in.aprise.finance.group.model.repository.GroupCurrencyRepository;
 import in.aprise.finance.group.model.repository.GroupRepository;
@@ -102,7 +103,16 @@ public class GroupService {
 
         return groups.stream().map(group -> {
             List<Currency> currencies = group.getGroupCurrencies().stream().map(GroupCurrency::getCurrency).toList();
-            return GroupResponseDTO.builder().id(group.getId()).name(group.getName()).description(group.getDescription()).currencies(currencies).type(group.getType()).createdAt(group.getCreatedAt().toString()).build();
+            List<GroupMemberResponseDTO> groupMembers = group.getGroupMembers().stream().map(GroupMember::getMemberInfo).toList();
+            return GroupResponseDTO.builder()
+                    .id(group.getId())
+                    .name(group.getName())
+                    .description(group.getDescription())
+                    .currencies(currencies)
+                    .type(group.getType())
+                    .members(groupMembers)
+                    .createdAt(group.getCreatedAt()
+                            .toString()).build();
         }).toList();
     }
 

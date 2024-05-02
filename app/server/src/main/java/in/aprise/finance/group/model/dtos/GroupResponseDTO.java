@@ -19,6 +19,7 @@ public class GroupResponseDTO {
     private String name;
     private String description;
     private List<Currency> currencies;
+    private List<GroupMemberResponseDTO> members;
     private GroupType type;
     private String createdAt;
 }
