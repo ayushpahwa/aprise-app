@@ -60,4 +60,20 @@ class UserServiceTest {
 
         assertEquals(new UserProfileResponseDTO(id,fullName,email,defaultCurrency,mockedAccountList,joiningDate),response);
     }
+
+    @Test
+    void shouldReturnCorrectDataIfAccountsFound() {
+
+        // setup mocks
+        var mockedAccountList = new ArrayList<Account>();
+        mockedAccountList.add(new Account());
+        mockedAccountList.add(new Account());
+        when(accountRepository.findAccountsByUserId(id)).thenReturn(mockedAccountList);
+
+        // when
+        UserProfileResponseDTO response = serviceUnderTest.profile();
+
+        assertEquals(new UserProfileResponseDTO(id,fullName,email,defaultCurrency,mockedAccountList,joiningDate),response);
+        assertEquals(2, response.accounts().size());
+    }
 }
