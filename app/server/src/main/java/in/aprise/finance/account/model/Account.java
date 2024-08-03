@@ -33,7 +33,7 @@ public class Account {
     private LocalDateTime deleted_at;
 
     @JsonIgnore
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "currency_id", referencedColumnName = "id")
     private Currency currency;
 
