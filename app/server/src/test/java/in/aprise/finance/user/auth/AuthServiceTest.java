@@ -7,6 +7,7 @@ import in.aprise.finance.group.GroupService;
 import in.aprise.finance.shared.config.JWTService;
 import in.aprise.finance.shared.exception.ApriseException;
 import in.aprise.finance.shared.exception.GlobalError;
+import in.aprise.finance.user.UserTestHelpers;
 import in.aprise.finance.user.model.User;
 import in.aprise.finance.user.model.UsersRepository;
 import in.aprise.finance.user.model.dtos.AuthResponseDTO;
@@ -23,7 +24,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -95,7 +95,7 @@ class AuthServiceTest {
 
         // Set mock
         Currency currency = new Currency(defaultCurrencyId, "USD", "USD");
-        User user = User.builder().email(email).hashPassword("hashedPassword").defaultCurrency(currency).fullName("AP").createdAt(LocalDateTime.now()).isVerified(false).build();
+        User user = UserTestHelpers.createDefaultUser(email,currency);
         when(currenciesRepository.findById(defaultCurrencyId)).thenReturn(Optional.of(currency));
         when(usersRepository.save(any(User.class))).thenReturn(user);
         doThrow(new ApriseException(GlobalError.GENERIC_BAD_REQUEST)).when(accountService).createAccount(any(User.class), any(Currency.class));
@@ -116,7 +116,7 @@ class AuthServiceTest {
 
         // Set mock
         Currency currency = new Currency(defaultCurrencyId, "USD", "USD");
-        User user = User.builder().email(email).hashPassword("hashedPassword").defaultCurrency(currency).fullName("AP").createdAt(LocalDateTime.now()).isVerified(false).build();
+        User user = UserTestHelpers.createDefaultUser(email,currency);
         when(currenciesRepository.findById(defaultCurrencyId)).thenReturn(Optional.of(currency));
         when(usersRepository.save(any(User.class))).thenReturn(user);
         doThrow(new ApriseException(GlobalError.GENERIC_BAD_REQUEST)).when(groupService).createDefaultGroupForUser(any(User.class), any(Currency.class));

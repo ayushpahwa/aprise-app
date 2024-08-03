@@ -1,9 +1,9 @@
 package in.aprise.finance.account;
 
 import in.aprise.finance.account.model.Account;
-import in.aprise.finance.account.model.AccountTypes;
 import in.aprise.finance.currency.Currency;
 import in.aprise.finance.currency.CurrencyRepository;
+import in.aprise.finance.user.UserTestHelpers;
 import in.aprise.finance.user.model.User;
 import in.aprise.finance.user.model.UsersRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +30,7 @@ class AccountRepositoryTest {
     @Autowired
     private CurrencyRepository currencyRepository;
 
-    List<Account> mockAccountList = new ArrayList<Account>();
+    List<Account> mockAccountList = new ArrayList<>();
     User savedUser;
     Currency savedCurrency;
 
@@ -41,21 +40,10 @@ class AccountRepositoryTest {
         Currency currency = Currency.builder().name("USD").symbol("USD").build();
         savedCurrency = currencyRepository.save(currency);
 
-        var user = User.builder().email("ayushpahwa96@gmail.com").hashPassword("encodedTestPass")
-                .fullName("AP")
-                .createdAt(LocalDateTime.now()).isVerified(false).build();
+        var user = UserTestHelpers.createDefaultUser(currency);
         savedUser = usersRepository.save(user);
 
-        Account mockAccount1 = Account
-                .builder()
-                .user(savedUser)
-                .currency(savedCurrency)
-                .type(AccountTypes.SAVINGS_ACCOUNT)
-                .name("AP cash")
-                .created_at(LocalDateTime.now())
-                .starting_balance(0)
-                .current_balance(0)
-                .build();
+        Account mockAccount1 = AccountTestHelpers.createDefaultAccount(savedUser, savedCurrency);
         Account savedMockAccount1 = repositoryUnderTest.save(mockAccount1);
         mockAccountList.add(savedMockAccount1);
     }
@@ -87,16 +75,7 @@ class AccountRepositoryTest {
     @Test
     void itShouldReturnMultipleAccountsForUserId() {
         // prepare: add one more account (other than the one added in setup)
-        Account mockAccount2 = Account
-                .builder()
-                .user(savedUser)
-                .currency(savedCurrency)
-                .type(AccountTypes.CHECKING_ACCOUNT)
-                .name("AP checking")
-                .created_at(LocalDateTime.now())
-                .starting_balance(0)
-                .current_balance(0)
-                .build();
+        Account mockAccount2 = AccountTestHelpers.createDefaultAccount(savedUser,savedCurrency);
         Account savedMockAccount2 = repositoryUnderTest.save(mockAccount2);
         mockAccountList.add(savedMockAccount2);
 
@@ -107,6 +86,7 @@ class AccountRepositoryTest {
         assertEquals(mockAccountList,foundAccounts);
     }
 
+    // Return correct data if entry with user id is found which is not marked as deleted
     @Test
     void itShouldReturnNoAccountsIfMarkedAsDeleted() {
         // prepare mark the created account as deleted

@@ -37,7 +37,7 @@ class UserServiceTest {
     String fullName = "AP";
     Currency defaultCurrency = new Currency(1, "USD", "USD");
     LocalDateTime joiningDate = LocalDateTime.now();
-    User mockUser = User.builder().id(id).email(email).fullName(fullName).defaultCurrency(defaultCurrency).createdAt(joiningDate).build();
+    User mockUser = UserTestHelpers.createDefaultUser(id, email, fullName, defaultCurrency, joiningDate);
 
     @BeforeEach
     void setUp() {
