@@ -1,5 +1,5 @@
-import { AxiosPromise } from 'axios';
-import Api from './Api';
+import type { AxiosPromise } from "axios";
+import Api from "./Api";
 
 export interface LoginDTO {
   email: string;
@@ -18,7 +18,7 @@ export interface AuthResponse {
 }
 
 class AuthAPI extends Api {
-  static BASE = '/auth';
+  static BASE = "/auth";
   static LOGIN = `${this.BASE}/login`;
   static REGISTER = `${this.BASE}/register`;
 
@@ -26,7 +26,9 @@ class AuthAPI extends Api {
     return Api.post(AuthAPI.LOGIN, loginData);
   }
 
-  static async register(registerData: RegisterDTO): Promise<AxiosPromise<AuthResponse>> {
+  static async register(
+    registerData: RegisterDTO,
+  ): Promise<AxiosPromise<AuthResponse>> {
     return Api.post(AuthAPI.REGISTER, registerData);
   }
 }

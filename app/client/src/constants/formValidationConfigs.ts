@@ -1,11 +1,15 @@
 import {
+  VALIDATION_AMOUNT_INVALID,
+  VALIDATION_AMOUNT_REQUIRED,
+  VALIDATION_DESC_REQUIRED,
   VALIDATION_EMAIL_INVALID,
   VALIDATION_EMAIL_REQUIRED,
   VALIDATION_FULLNAME_REQUIRED,
+  VALIDATION_GROUP_NAME_REQUIRED,
   VALIDATION_PASSWORD_MIN_LENGTH,
   VALIDATION_PASSWORD_REQUIRED,
   createMessage,
-} from './messages';
+} from "./messages";
 
 export const emailValidationConfig = {
   required: createMessage(VALIDATION_EMAIL_REQUIRED),
@@ -23,6 +27,31 @@ export const passwordValidationConfig = {
   },
 };
 
-export const fullNameValidationConfig = {
+export const nameValidationConfig = {
   required: createMessage(VALIDATION_FULLNAME_REQUIRED),
+};
+
+export const descValidationConfig = {
+  required: createMessage(VALIDATION_DESC_REQUIRED),
+};
+
+export const txnAmountValidationConfig = {
+  required: createMessage(VALIDATION_AMOUNT_REQUIRED),
+  validate: {
+    zeroCheck: (value: string) => {
+      const parsedValue = parseFloat(value.slice(2));
+      return parsedValue !== 0
+        ? true
+        : createMessage(VALIDATION_AMOUNT_REQUIRED);
+    },
+    trailingDotCheck: (value: string) => {
+      return !value.endsWith(".")
+        ? true
+        : createMessage(VALIDATION_AMOUNT_INVALID);
+    },
+  },
+};
+
+export const groupSelectValidationConfig = {
+  required: createMessage(VALIDATION_GROUP_NAME_REQUIRED),
 };

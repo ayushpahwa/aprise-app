@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
 
-    @Query("SELECT g FROM groups g JOIN group_members gm ON g.id = gm.group.id WHERE gm.user.id = ?1")
+    @Query("SELECT g FROM groups g JOIN group_members gm ON g.id = gm.group.id WHERE gm.user.id = ?1 AND gm.isDeleted = false AND g.isDeleted = false")
     List<Group> findGroupsByUserId(long id);
 }

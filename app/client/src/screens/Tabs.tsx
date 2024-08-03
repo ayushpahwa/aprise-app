@@ -1,60 +1,108 @@
-import React, { useContext } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import TransactionContextProvider, { TransactionContext } from 'store/TransactionsContext';
-import Home from './Home';
-import Details from './Details';
-import { TransactionModal } from 'components/TransactionModal';
+import TransactionContextProvider from "store/TransactionsContext";
+import Home from "./Home";
+import Activities from "./Activities";
+import Profile from "./Profile";
+import Groups from "./Groups";
+import type { TabsStackParamList } from "constants/types/navigationTypes";
+import { ScreenNamesEnum } from "constants/types/navigationTypes";
 
-const { Navigator, Screen } = createBottomTabNavigator();
+const { Navigator, Screen } = createBottomTabNavigator<TabsStackParamList>();
 
 function DummyComponentForModalTab() {
   return null;
 }
 
 export const Tabs = () => {
-  const { ui } = useContext(TransactionContext);
   return (
-    <>
-      <TransactionModal />
-
-      <TransactionContextProvider>
-        <Navigator>
-          <Screen
-            name="Home"
-            component={Home}
-            options={{
-              title: 'Home',
-              tabBarIcon: ({ color }) => <MaterialCommunityIcons name="home" size={24} color={color} />,
-            }}
-          />
-          {/* Add tab which doesn't open a screen, just opens a modal */}
-          <Screen
-            name="Add"
-            component={DummyComponentForModalTab}
-            options={{
-              title: 'Add',
-              tabBarIcon: ({ color }) => <MaterialCommunityIcons name="plus" size={24} color={color} />,
-            }}
-            listeners={() => ({
+    <TransactionContextProvider>
+      <Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: "#2f95dc",
+          tabBarInactiveTintColor: "gray",
+        }}
+      >
+        <Screen
+          component={Home}
+          name={ScreenNamesEnum.TABS_HOME}
+          options={{
+            title: "Home",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons color={color} name="home" size={size} />
+            ),
+          }}
+        />
+        <Screen
+          component={Activities}
+          name={ScreenNamesEnum.TABS_ACTIVITIES}
+          options={{
+            title: "Activities",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                color={color}
+                name="history"
+                size={size}
+              />
+            ),
+          }}
+        />
+        {/* Add tab which doesn't open a screen, just opens a modal */}
+        <Screen
+          component={DummyComponentForModalTab}
+          listeners={({ navigation }) => {
+            return {
               tabPress: (e) => {
                 e.preventDefault();
-                // Open the modal
-                ui.openModal();
+                navigation.navigate(ScreenNamesEnum.ROOT_TRANSACTION_MODAL);
               },
-            })}
-          />
-          <Screen
-            name="AllExpenses"
-            component={Details}
-            options={{
-              title: 'All Expenses',
-              tabBarIcon: ({ color }) => <MaterialCommunityIcons name="format-list-bulleted" size={24} color={color} />,
-            }}
-          />
-        </Navigator>
-      </TransactionContextProvider>
-    </>
+            };
+          }}
+          name={ScreenNamesEnum.TABS_ADD}
+          options={{
+            title: "Add",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                color={color}
+                name="plus"
+                size={size * 1.35}
+              />
+            ),
+            headerShown: false,
+          }}
+        />
+        <Screen
+          component={Groups}
+          name={ScreenNamesEnum.TABS_GROUPS}
+          options={{
+            title: "Groups",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                color={color}
+                name="account-group-outline"
+                size={size}
+              />
+            ),
+          }}
+        />
+        <Screen
+          component={Profile}
+          name={ScreenNamesEnum.TABS_PROFILE}
+          options={{
+            title: "Profile",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                color={color}
+                name="account-circle-outline"
+                size={size}
+              />
+            ),
+          }}
+        />
+      </Navigator>
+    </TransactionContextProvider>
   );
 };

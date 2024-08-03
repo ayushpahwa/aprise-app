@@ -1,6 +1,7 @@
 package in.aprise.finance.group.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import in.aprise.finance.group.model.dtos.GroupMemberResponseDTO;
 import in.aprise.finance.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,4 +37,11 @@ public class GroupMember {
     private boolean isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
+
+    public GroupMemberResponseDTO getMemberInfo() {
+        return GroupMemberResponseDTO.builder()
+                .id(user.getId())
+                .name(user.getFullName())
+                .build();
+    }
 }

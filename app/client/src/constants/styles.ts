@@ -1,13 +1,30 @@
+import { StyleSheet } from "react-native";
+
 export const Colors = {
-  primary_trust: '#0F766E',
-  primary_calm: '#1E3A8A',
-  secondary_neutral: '#f9beda',
-  secondary_calm: '#60A5FA',
-  accent_cta: '#EA580C',
-  accent_success: '#10B981',
-  accent_gray: '#DEE1E6FF',
-  background: '#fff',
-  text: '#333',
-  error100: '#fcdcbf',
-  error500: '#f37c13',
+  primary_trust: "#0F766E",
+  primary_calm: "#1E3A8A",
+  secondary_neutral: "#f9beda",
+  secondary_calm: "#60A5FA",
+  accent_cta: "#EA580C",
+  accent_success: "#10B981",
+  accent_gray: "#DEE1E6FF",
+  background: "#fff",
+  text: "#333",
+  error100: "#fcdcbf",
+  error500: "#f37c13",
 };
+
+export const defaultStyles = StyleSheet.create({
+  titleText: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 16,
+  },
+  topCard: {
+    paddingTop: 48,
+    paddingBottom: 16,
+    margin: -1,
+    backgroundColor: Colors.accent_success,
+    opacity: 0.7,
+  },
+});

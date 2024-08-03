@@ -1,46 +1,76 @@
-import { View, Text, StyleSheet } from 'react-native';
-
-import { Colors } from '../../constants/styles';
-import { Control, Controller, FieldPath, RegisterOptions } from 'react-hook-form';
-import { VALIDATION_INVALID_INPUT, createMessage } from 'constants/messages';
-import { Input, ProgressBar } from '@ui-kitten/components';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Colors } from "../../constants/styles";
+import type { Control, FieldPath, RegisterOptions } from "react-hook-form";
+import { Controller } from "react-hook-form";
+import { VALIDATION_INVALID_INPUT, createMessage } from "constants/messages";
+import { Input, ProgressBar } from "@ui-kitten/components";
 
 type FieldName = FieldPath<any>;
 
 interface Props {
-  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
-  autoComplete?: 'off' | 'email' | 'name';
+  autoCapitalize?: "none" | "sentences" | "words" | "characters";
+  autoComplete?: "off" | "email" | "name";
   label: string;
-  keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
+  keyboardType?: "default" | "email-address" | "numeric" | "phone-pad";
+  defaultValue?: string;
   secure?: boolean;
   control: Control<any>;
   name: FieldName; // Prop used by react-hook-form to identify the input
-  validationRules?: Omit<RegisterOptions<any, FieldName>, 'valueAsNumber' | 'valueAsDate' | 'setValueAs' | 'disabled'>; // Prop used by react-hook-form to define validation rules
+  validationRules?: Omit<
+    RegisterOptions<any, FieldName>,
+    "valueAsNumber" | "valueAsDate" | "setValueAs" | "disabled"
+  >; // Prop used by react-hook-form to define validation rules
 }
 
-function CustomTextInput({ autoCapitalize = 'none', autoComplete, control, label, keyboardType, secure, name, validationRules = {} }: Props) {
+function CustomTextInput({
+  autoCapitalize = "none",
+  autoComplete,
+  control,
+  defaultValue,
+  keyboardType,
+  label,
+  name,
+  secure,
+  validationRules = {},
+}: Props) {
   return (
     <Controller
       control={control}
+      defaultValue={defaultValue}
       name={name}
-      rules={validationRules}
-      render={({ field: { value, onBlur, onChange }, fieldState: { error } }) => (
+      render={({
+        field: { onBlur, onChange, value },
+        fieldState: { error },
+      }) => (
         <View style={[styles.inputContainer]}>
-          <Text style={[styles.label, !!error && styles.labelInvalid]}>{label}</Text>
+          <Text style={[styles.label, !!error && styles.labelInvalid]}>
+            {label}
+          </Text>
           <Input
-            style={[styles.input, !!error && styles.inputInvalid]}
             autoCapitalize={autoCapitalize}
             autoComplete={autoComplete}
             keyboardType={keyboardType}
-            onChangeText={onChange}
             onBlur={onBlur}
+            onChangeText={onChange}
+            style={[styles.input, !!error && styles.inputInvalid]}
+            textStyle={!!secure ? { color: "rgba(0,0,0,0)" } : {}} // Hide text in secure input
             value={value}
-            textStyle={!!secure ? { color: 'rgba(0,0,0,0)' } : {}} // Hide text in secure input
           />
-          {!!secure && <ProgressBar progress={(!!value ? value?.length : 0) / 6} status={(!!value ? value?.length : 0) < 3 ? 'danger' : 'success'} />}
-          {!!error && <Text style={styles.errorText}>{error.message || createMessage(VALIDATION_INVALID_INPUT)}</Text>}
+          {!!secure && (
+            <ProgressBar
+              progress={(!!value ? value?.length : 0) / 6}
+              status={(!!value ? value?.length : 0) < 3 ? "danger" : "success"}
+            />
+          )}
+          {!!error && (
+            <Text style={styles.errorText}>
+              {error.message || createMessage(VALIDATION_INVALID_INPUT)}
+            </Text>
+          )}
         </View>
       )}
+      rules={validationRules}
     />
   );
 }

@@ -36,8 +36,8 @@ public class UserService {
         // get user from database
         return new UserProfileResponseDTO(
                 validatedUser.getId(),
-                validatedUser.getEmail(),
                 validatedUser.getFullName(),
+                validatedUser.getEmail(),
                 defaultCurrency,
                 accounts,
                 validatedUser.getCreatedAt()
