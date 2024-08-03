@@ -77,8 +77,8 @@ class AccountRepositoryTest {
 
     @Test
     void itShouldReturnEmptyForNoResultsFound() {
-        // act
-        List<Account> foundAccounts = repositoryUnderTest.findAccountsByUserId(4L);
+        // act: send a random ID other than the saved user ID
+        List<Account> foundAccounts = repositoryUnderTest.findAccountsByUserId(savedUser.getId()+1L);
 
         // assert
         assertTrue(foundAccounts.isEmpty());
@@ -99,11 +99,25 @@ class AccountRepositoryTest {
                 .build();
         Account savedMockAccount2 = repositoryUnderTest.save(mockAccount2);
         mockAccountList.add(savedMockAccount2);
-        
+
         // act
         List<Account> foundAccounts = repositoryUnderTest.findAccountsByUserId(savedUser.getId());
 
         // assert
         assertEquals(mockAccountList,foundAccounts);
+    }
+
+    @Test
+    void itShouldReturnNoAccountsIfMarkedAsDeleted() {
+        // prepare mark the created account as deleted
+        Account mockAccount = mockAccountList.get(0);
+        mockAccount.set_deleted(true);
+
+        // act
+        List<Account> foundAccounts = repositoryUnderTest.findAccountsByUserId(savedUser.getId());
+
+        // assert
+        assertTrue(foundAccounts.isEmpty());
+
     }
 }
