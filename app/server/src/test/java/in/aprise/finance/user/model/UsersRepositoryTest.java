@@ -14,11 +14,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class UsersRepositoryTest {
 
     @Autowired
-    private UsersRepository usersTest;
+    private UsersRepository repositoryUnderTest;
 
     @AfterEach
     void tearDown() {
-        usersTest.deleteAll();
+        repositoryUnderTest.deleteAll();
     }
 
     @Test
@@ -28,10 +28,10 @@ class UsersRepositoryTest {
         var user = User.builder().email(email).hashPassword("encodedTestPass")
                 .fullName("Ayush")
                 .createdAt(LocalDateTime.now()).isVerified(false).build();
-        usersTest.save(user);
+        repositoryUnderTest.save(user);
 
         // act
-        Optional<User> foundUser = usersTest.findByEmail(email);
+        Optional<User> foundUser = repositoryUnderTest.findByEmail(email);
 
         // assert
         assertEquals(foundUser.orElseThrow(),user);
@@ -45,10 +45,10 @@ class UsersRepositoryTest {
         var user = User.builder().email(email).hashPassword("encodedTestPass")
                 .fullName("Ayush")
                 .createdAt(LocalDateTime.now()).isVerified(false).build();
-        usersTest.save(user);
+        repositoryUnderTest.save(user);
 
         // act
-        Optional<User> foundUser = usersTest.findByEmail(wrongEmail);
+        Optional<User> foundUser = repositoryUnderTest.findByEmail(wrongEmail);
 
         // assert
         assert(foundUser.isEmpty());
