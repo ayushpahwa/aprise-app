@@ -1,31 +1,125 @@
-import { StyleSheet, TextInput } from 'react-native';
-import { TRANSACTION_TYPES } from 'constants/txnConstants';
+import React from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import { TRANSACTION_TYPES } from "constants/txnConstants";
+import { Colors } from "constants/styles";
+import type { Control } from "react-hook-form";
+import { Controller } from "react-hook-form";
+import { txnAmountValidationConfig } from "constants/formValidationConfigs";
+import { VALIDATION_AMOUNT_REQUIRED, createMessage } from "constants/messages";
 
 interface Props {
-  amount: string;
-  onChange: (value: string) => void;
+  name: string;
+  control: Control<any>;
   // Add the transactionType prop which is can be either TRANSACTION_TYPES.EXPENSE or TRANSACTION_TYPES.INCOME
   transactionType: string;
 }
 
-export const TransactionAmountInput = ({ transactionType, amount, onChange }: Props) => {
-  const sign = transactionType === TRANSACTION_TYPES.EXPENSE ? '-' : '+';
+const amountRegex = /^(\+|-)\s(\d+(\.\d{0,2})?)?$/;
+
+export const TransactionAmountInput = ({
+  control,
+  name,
+  transactionType,
+}: Props) => {
+  const sign =
+    !!transactionType && transactionType === TRANSACTION_TYPES.INCOME
+      ? "+"
+      : "-";
   return (
-    <TextInput
-      style={styles.input}
-      placeholder="Amount"
-      keyboardType="decimal-pad"
-      value={`${sign} $${amount}`}
-      onChangeText={(rawText) => onChange(rawText.substring(3))}
+    <Controller
+      control={control}
+      defaultValue={`${sign} 0`}
+      name={name}
+      render={({ field: { onChange, value }, fieldState: { error } }) => {
+        const handleTextChange = (rawText: string) => {
+          if (value === rawText) return;
+
+          if (rawText === "" || rawText === `${sign} `) {
+            onChange(`${sign} 0`);
+            return;
+          }
+
+          // do not allow multiple decimal points or any other special characters
+          if (!amountRegex.test(rawText)) {
+            return;
+          }
+
+          // by default the value look like `-0` or `+0` when the input is empty
+          // when the user inputs a number, we need to remove the 0 and keep the sign with the number
+          if (value === `${sign} 0`) {
+            // remove the 0 from the value
+            let output = rawText.slice(3);
+
+            if (output === ".") {
+              output = "0.";
+            }
+
+            onChange(`${sign} ${output}`);
+            return;
+          }
+
+          const text = rawText.split(" ")[1];
+          onChange(`${sign} ${text}`);
+        };
+        return (
+          <>
+            <View
+              style={[styles.container, !!error && styles.invalidContainer]}
+            >
+              <View style={styles.symbolCard}>
+                <Text style={{ fontWeight: "600" }}>INR</Text>
+              </View>
+              <TextInput
+                caretHidden
+                keyboardType="decimal-pad"
+                onChangeText={handleTextChange}
+                style={styles.input}
+                value={value}
+              />
+            </View>
+            {!!error && (
+              <Text style={styles.errorText}>
+                {error.message || createMessage(VALIDATION_AMOUNT_REQUIRED)}
+              </Text>
+            )}
+          </>
+        );
+      }}
+      rules={txnAmountValidationConfig}
     />
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    backgroundColor: 'white',
+  symbolCard: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: Colors.accent_gray,
+    borderRadius: 24,
+    width: 72,
+    padding: 12,
+    opacity: 0.5,
+  },
+  invalidContainer: {
+    borderColor: Colors.error500,
+  },
+  container: {
+    flexDirection: "row",
+    borderWidth: 0.5,
     padding: 12,
     borderRadius: 8,
+    alignItems: "center",
+    height: 96,
+    justifyContent: "space-between",
+  },
+  input: {
+    fontSize: 48,
+    width: "70%",
+    textAlign: "right",
+  },
+  errorText: {
+    color: Colors.error500,
+    marginTop: -12,
     marginBottom: 12,
   },
 });

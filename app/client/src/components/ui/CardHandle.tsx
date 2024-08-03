@@ -1,5 +1,6 @@
-import { View, StyleSheet } from 'react-native';
-import { Colors } from 'constants/styles';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { Colors } from "constants/styles";
 
 export const CardHandle = () => {
   return <View style={styles.cardHandle} />;
@@ -7,7 +8,7 @@ export const CardHandle = () => {
 
 const styles = StyleSheet.create({
   cardHandle: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: 16,
     marginTop: -20,
     width: 40,

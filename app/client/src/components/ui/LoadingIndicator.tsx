@@ -1,5 +1,6 @@
-import { Spinner } from '@ui-kitten/components/ui';
-import { StyleSheet, View } from 'react-native';
+import React from "react";
+import { Spinner } from "@ui-kitten/components/ui";
+import { StyleSheet, View } from "react-native";
 
 interface Props {
   style?: Record<string, any>;
@@ -13,8 +14,8 @@ export const LoadingIndicator = ({ style = {} }: Props): React.ReactElement => (
 
 const styles = StyleSheet.create({
   indicator: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

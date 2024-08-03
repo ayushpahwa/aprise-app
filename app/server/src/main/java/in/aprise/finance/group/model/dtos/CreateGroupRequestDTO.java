@@ -18,6 +18,9 @@ public class CreateGroupRequestDTO {
     @NotBlank(message = "Group name is mandatory")
     private String name;
 
+    @NotBlank(message = "Group description is mandatory")
+    private String description;
+
     @NotBlank(message = "Group type is mandatory")
     private GroupType type;
 
