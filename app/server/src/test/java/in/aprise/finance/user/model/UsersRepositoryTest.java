@@ -22,7 +22,7 @@ class UsersRepositoryTest {
     }
 
     @Test
-    void itShouldCheckIfUserExistsByEmail() {
+    void itShouldReturnUserIfEmailFound() {
         // prepare
         var email = "ayushpahwa96@gmail.com";
         var user = User.builder().email(email).hashPassword("encodedTestPass")
@@ -38,7 +38,7 @@ class UsersRepositoryTest {
     }
 
     @Test
-    void itShouldThrowErrorForNonExistentUser() {
+    void itShouldThrowErrorIfEmailNotFound() {
         // prepare
         var email = "ayushpahwa96@gmail.com";
         var wrongEmail = "ayush@appsmith.com";
