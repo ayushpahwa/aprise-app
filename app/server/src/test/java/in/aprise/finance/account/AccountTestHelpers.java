@@ -25,6 +25,20 @@ public class AccountTestHelpers {
         Account account = createDefaultAccount();
         account.setUser(user);
         account.setCurrency(currency);
+        account.setName(user.getFullName() + "'s " + AccountTypes.SAVINGS_ACCOUNT + " account");
+        return account;
+    }
+
+    public static Account createDefaultAccount(LocalDateTime creationTime) {
+        Account account = createDefaultAccount();
+        account.setCreated_at(creationTime);
+        return account;
+    }
+
+    public static Account createDefaultAccount(float currentBalance, LocalDateTime creationTime) {
+        Account account = createDefaultAccount();
+        account.setCreated_at(creationTime);
+        account.setCurrent_balance(currentBalance);
         return account;
     }
 }
