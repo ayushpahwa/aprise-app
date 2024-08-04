@@ -25,6 +25,8 @@ public class GroupMemberService {
     }
 
     public GroupMember validateGroupMembership(long groupId, long user) {
-        return groupMemberRepository.findByGroupIdAndUserIdAndIsDeleted(groupId, user,false).orElseThrow(() -> new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "User is not a member of the group"));
+        return groupMemberRepository
+                .findByGroupIdAndUserIdAndIsDeleted(groupId, user,false)
+                .orElseThrow(() -> new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "User is not a member of the group"));
     }
 }
