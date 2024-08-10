@@ -5,9 +5,11 @@ import in.aprise.finance.group.model.Group;
 import in.aprise.finance.group.model.GroupMember;
 import in.aprise.finance.group.model.GroupType;
 import in.aprise.finance.group.model.dtos.CreateGroupRequestDTO;
+import in.aprise.finance.group.model.dtos.GroupMemberResponseDTO;
 import in.aprise.finance.group.model.dtos.GroupResponseDTO;
 import in.aprise.finance.user.UserTestHelpers;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class GroupTestHelpers {
                 .name("Some group")
                 .description("My testing group")
                 .type(GroupType.PERSONAL)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 
@@ -47,6 +50,11 @@ public class GroupTestHelpers {
     }
 
     public static GroupResponseDTO createGroupResponseFromGroup(Group group, Currency currency) {
-        return GroupResponseDTO.builder().id(group.getId()).name(group.getName()).description(group.getDescription()).currencies(List.of(currency)).type(group.getType()).createdAt(group.getCreatedAt().toString()).build();
+        List<GroupMemberResponseDTO> groupMembers = group.getGroupMembers().stream().map(GroupMember::getMemberInfo).toList();
+        return GroupResponseDTO.builder().id(group.getId()).name(group.getName()).description(group.getDescription()).currencies(List.of(currency)).type(group.getType()).members(groupMembers).createdAt(group.getCreatedAt().toString()).build();
+    }
+
+    public static List<GroupResponseDTO> createDTOListFromGroupList(List<Group> groupList) {
+        return groupList.stream().map(group -> createGroupResponseFromGroup(group, group.getGroupCurrencies().get(0).getCurrency())).toList();
     }
 }
