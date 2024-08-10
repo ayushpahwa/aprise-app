@@ -25,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,19 +92,21 @@ public class GroupService {
             throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "Failed to create group: " + e.getMessage());
         }
 
+        List<GroupMemberResponseDTO> groupMembers = new ArrayList<>();
         // Add members to group
         request.getMembers().forEach(memberId -> {
             if (memberId == validatedUser.getId()) return; // skip if member is owner (current user)
             User member = userRepository.findById(memberId).orElseThrow(() -> new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "Invalid member id: " + memberId));
             member.setId(memberId);
             try {
-                groupMemberService.addMemberToGroup(createdGroup, member, false, false);
+                var savedMember = groupMemberService.addMemberToGroup(createdGroup, member, false, false);
+                groupMembers.add(savedMember.getMemberInfo());
             } catch (Exception e) {
                 throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "Failed to create new group member: " + e.getMessage());
             }
         });
 
-        return GroupResponseDTO.builder().id(createdGroup.getId()).name(createdGroup.getName()).description(createdGroup.getDescription()).currencies(List.of(currency)).type(createdGroup.getType()).createdAt(createdGroup.getCreatedAt().toString()).build();
+        return GroupResponseDTO.builder().id(createdGroup.getId()).name(createdGroup.getName()).description(createdGroup.getDescription()).currencies(List.of(currency)).members(groupMembers).type(createdGroup.getType()).createdAt(createdGroup.getCreatedAt().toString()).build();
     }
 
     public List<GroupResponseDTO> getGroupsForCurrentUser() {
