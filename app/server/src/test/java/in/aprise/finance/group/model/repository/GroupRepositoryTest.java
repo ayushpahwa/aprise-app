@@ -16,8 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class GroupRepositoryTest {
@@ -25,9 +24,12 @@ class GroupRepositoryTest {
     @Autowired
     private GroupRepository repositoryUnderTest;
 
-    @Autowired private UsersRepository usersRepository;
-    @Autowired private GroupMemberRepository gmRepository;
-    @Autowired private CurrencyRepository currencyRepository;
+    @Autowired
+    private UsersRepository usersRepository;
+    @Autowired
+    private GroupMemberRepository gmRepository;
+    @Autowired
+    private CurrencyRepository currencyRepository;
 
     Group savedGroup;
     User savedUser;
@@ -51,7 +53,7 @@ class GroupRepositoryTest {
     }
 
     @Test
-    void itShouldReturnEmptyIfUserHasNoGroups() {
+    void findGroupsByUserId_itShouldReturnEmptyIfUserHasNoGroups() {
         // prepare: take a user id that is different from the one saved in setup
         var fakeUserId = savedUser.getId() + 1L;
 
@@ -63,7 +65,7 @@ class GroupRepositoryTest {
     }
 
     @Test
-    void itShouldReturnEmptyIfUserIsNoLongerGroupMember() {
+    void findGroupsByUserId_itShouldReturnEmptyIfUserIsNoLongerGroupMember() {
         // prepare: update the stored group member entry as deleted
         savedGroupMember.setDeleted(true);
         gmRepository.save(savedGroupMember);
@@ -76,7 +78,7 @@ class GroupRepositoryTest {
     }
 
     @Test
-    void itShouldReturnEmptyIfGroupHasBeenDeleted() {
+    void findGroupsByUserId_itShouldReturnEmptyIfGroupHasBeenDeleted() {
         // prepare: update the stored group entry as deleted
         savedGroup.setDeleted(true);
         repositoryUnderTest.save(savedGroup);
@@ -89,7 +91,7 @@ class GroupRepositoryTest {
     }
 
     @Test
-    void itShouldReturnGroupDataIfAllDataIsPresent() {
+    void findGroupsByUserId_itShouldReturnGroupDataIfAllDataIsPresent() {
         // prepare: create array with saved group, since the db function returns all groups of the user
         List<Group> expectedGroups = new ArrayList<>();
         expectedGroups.add(savedGroup);
@@ -99,6 +101,53 @@ class GroupRepositoryTest {
         var fetchedGroup = repositoryUnderTest.findGroupsByUserId(savedUser.getId());
 
         // assert: group
-        assertEquals(expectedGroups,fetchedGroup);
+        assertEquals(expectedGroups, fetchedGroup);
+    }
+
+    @Test
+    void existsByIdAndUser_itShouldReturnFalseIfUserHasNoGroups() {
+        // prepare: take a user id that is different from the one saved in setup
+        var fakeUserId = savedUser.getId() + 1L;
+
+        // act: try fetching groups with the fake userId
+        var serviceResponse = repositoryUnderTest.existsByIdAndUserId(savedGroup.getId(), fakeUserId);
+
+        // assert
+        assertFalse(serviceResponse);
+    }
+
+    @Test
+    void existsByIdAndUserId_itShouldReturnFalseIfUserIsNoLongerGroupMember() {
+        // prepare: update the stored group member entry as deleted
+        savedGroupMember.setDeleted(true);
+        gmRepository.save(savedGroupMember);
+
+        // act: try fetching groups with the fake userId
+        var serviceResponse = repositoryUnderTest.existsByIdAndUserId(savedGroup.getId(), savedUser.getId());
+
+        // assert
+        assertFalse(serviceResponse);
+    }
+
+    @Test
+    void existsByIdAndUserId_itShouldReturnFalseIfGroupHasBeenDeleted() {
+        // prepare: update the stored group entry as deleted
+        savedGroup.setDeleted(true);
+        repositoryUnderTest.save(savedGroup);
+
+        // act: try fetching groups with the fake userId
+        var serviceResponse = repositoryUnderTest.existsByIdAndUserId(savedGroup.getId(), savedUser.getId());
+
+        // assert
+        assertFalse(serviceResponse);
+    }
+
+    @Test
+    void existsByIdAndUserId_itShouldReturnTrueIfEntryIsPresent() {
+        // act: try fetching groups with the fake userId
+        var serviceResponse = repositoryUnderTest.existsByIdAndUserId(savedGroup.getId(), savedUser.getId());
+
+        // assert
+        assertTrue(serviceResponse);
     }
 }
