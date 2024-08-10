@@ -11,6 +11,7 @@ import in.aprise.finance.group.model.repository.GroupRepository;
 import in.aprise.finance.shared.exception.ApriseException;
 import in.aprise.finance.shared.exception.GlobalError;
 import in.aprise.finance.transaction.TransactionService;
+import in.aprise.finance.transaction.model.dtos.TransactionResponseDTO;
 import in.aprise.finance.user.UserTestHelpers;
 import in.aprise.finance.user.model.User;
 import in.aprise.finance.user.model.UsersRepository;
@@ -337,7 +338,72 @@ class GroupServiceTest {
     }
 
     @Test
-    void validateGroupExists() {
+    void getGroupTransactions_itShouldThrowErrorIfGroupNotFound() {
+        // prepare
+        setupSecurityConfigMock();
+        var errorMessage = "Resource not found: Group with given ID";
+
+        // set mock
+        when(groupRepository.existsByIdAndUserId(1L, 1L)).thenReturn(false);
+
+        // when
+        ApriseException thrown = assertThrows(ApriseException.class, () -> {
+            serviceUnderTest.getGroupTransactions(1L);
+        });
+
+        // assert
+        assertEquals(errorMessage, thrown.getMessage());
+    }
+
+    @Test
+    void getGroupTransactions_itShouldThrowErrorIfTxnFetchFails() {
+        // prepare
+        setupSecurityConfigMock();
+        var errorMessage = "Txn Fetch failed";
+
+        // set mock
+        when(groupRepository.existsByIdAndUserId(1L, 1L)).thenReturn(true);
+        when(transactionService.getAllTransactionsForGroup(1L)).thenThrow(new ApriseException(GlobalError.INTERNAL_SERVER_ERROR, errorMessage));
+
+        // when
+        ApriseException thrown = assertThrows(ApriseException.class, () -> {
+            serviceUnderTest.getGroupTransactions(1L);
+        });
+
+        // assert
+        assertEquals("Internal server error while processing request: " + errorMessage, thrown.getMessage());
+    }
+
+    @Test
+    void getGroupTransactions_itShouldReturnEmptyListIfNoTxn() {
+        // prepare
+        setupSecurityConfigMock();
+        // set mock
+        when(groupRepository.existsByIdAndUserId(1L, 1L)).thenReturn(true);
+        when(transactionService.getAllTransactionsForGroup(1L)).thenReturn(new ArrayList<>());
+
+        // when
+        var response = serviceUnderTest.getGroupTransactions(1L);
+
+        // assert
+        assertTrue(response.isEmpty());
+    }
+
+    @Test
+    void getGroupTransactions_itShouldReturnListOfData() {
+        // prepare
+        setupSecurityConfigMock();
+        List<TransactionResponseDTO> expectedResponse = new ArrayList<>();
+
+        // set mock
+        when(groupRepository.existsByIdAndUserId(1L, 1L)).thenReturn(true);
+        when(transactionService.getAllTransactionsForGroup(1L)).thenReturn(expectedResponse);
+
+        // when
+        var response = serviceUnderTest.getGroupTransactions(1L);
+
+        // assert
+        assertEquals(expectedResponse, response);
     }
 
     @Test
