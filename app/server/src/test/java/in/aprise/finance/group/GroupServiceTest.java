@@ -4,6 +4,7 @@ import in.aprise.finance.currency.Currency;
 import in.aprise.finance.currency.CurrencyRepository;
 import in.aprise.finance.group.model.Group;
 import in.aprise.finance.group.model.GroupCurrency;
+import in.aprise.finance.group.model.GroupMember;
 import in.aprise.finance.group.model.GroupType;
 import in.aprise.finance.group.model.repository.GroupCurrencyRepository;
 import in.aprise.finance.group.model.repository.GroupRepository;
@@ -28,10 +29,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -271,7 +273,9 @@ class GroupServiceTest {
         setupSecurityConfigMock();
         var requestDTO = GroupTestHelpers.createDefaultGroupRequestDTO(validatedUserId);
         requestDTO.getMembers().add(3L);
-        Group mockGroup = GroupTestHelpers.createDefaultGroup();
+        GroupMember mockGroupMember = GroupTestHelpers.createDefaultGroupMember();
+        Group mockGroup = mockGroupMember.getGroup();
+        mockGroup.setGroupMembers(List.of(mockGroupMember, mockGroupMember));
         mockGroup.setCreatedAt(LocalDateTime.now());
         Currency currency = new Currency(1, "USD", "USD");
         var expectedServiceResponse = GroupTestHelpers.createGroupResponseFromGroup(mockGroup, currency);
@@ -280,6 +284,7 @@ class GroupServiceTest {
         when(currenciesRepository.findById(1)).thenReturn(Optional.of(currency));
         when(serviceUnderTest.createGroupForUser(ArgumentMatchers.any(User.class), ArgumentMatchers.any(Currency.class), ArgumentMatchers.any(GroupType.class), ArgumentMatchers.any(String.class), ArgumentMatchers.any(String.class), ArgumentMatchers.any(Boolean.class))).thenReturn(mockGroup);
         when(userRepository.findById(ArgumentMatchers.any(Long.class))).thenReturn(Optional.of(new User()));
+        when(groupMemberService.addMemberToGroup(ArgumentMatchers.any(Group.class), ArgumentMatchers.any(User.class), ArgumentMatchers.any(Boolean.class), ArgumentMatchers.any(Boolean.class))).thenReturn(mockGroupMember);
 
         // when
         var serviceResponse = serviceUnderTest.createGroup(requestDTO);
@@ -292,7 +297,43 @@ class GroupServiceTest {
     }
 
     @Test
-    void getGroupsForCurrentUser() {
+    void getGroupsForCurrentUser_itShouldReturnEmptyIfNoGroupsFound() {
+        setupSecurityConfigMock();
+
+        // set mocks
+        when(groupRepository.findGroupsByUserId(1L)).thenReturn(new ArrayList<Group>());
+
+        var serviceResponse = serviceUnderTest.getGroupsForCurrentUser();
+
+        assertTrue(serviceResponse.isEmpty());
+    }
+
+    @Test
+    void getGroupsFroCurrentUser_itShouldReturnGroupsInCorrectFormat() {
+        // prepare: setup mocks for security config, group currencies and group members
+        setupSecurityConfigMock();
+        var mockGroupMember1 = GroupTestHelpers.createDefaultGroupMember();
+        var mockGroup1 = mockGroupMember1.getGroup();
+        GroupCurrency groupCurrency = new GroupCurrency(1L, mockGroup1, new Currency(), true, 1, false, LocalDateTime.now(), null);
+        mockGroup1.setGroupCurrencies(List.of(groupCurrency));
+        mockGroup1.setGroupMembers(List.of(mockGroupMember1));
+        var mockGroupMember2 = GroupTestHelpers.createDefaultGroupMember();
+        var mockGroup2 = mockGroupMember2.getGroup();
+        mockGroup2.setGroupCurrencies(List.of(groupCurrency));
+        mockGroup2.setGroupMembers(List.of(mockGroupMember2));
+        List<Group> mockGroups = new ArrayList<>();
+        mockGroups.add(mockGroup1);
+        mockGroups.add(mockGroup2);
+
+        // set mocks
+        when(groupRepository.findGroupsByUserId(validatedUserId)).thenReturn(mockGroups);
+
+        // when
+        var serviceResponse = serviceUnderTest.getGroupsForCurrentUser();
+
+        // assert
+        assertFalse(serviceResponse.isEmpty());
+        assertEquals(GroupTestHelpers.createDTOListFromGroupList(mockGroups), serviceResponse);
     }
 
     @Test
