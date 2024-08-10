@@ -47,18 +47,22 @@ public class GroupService {
         try {
             groupRepository.save(group);
         } catch (Exception e) {
-            throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST, e.getMessage());
+            throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "Failed to create group: " + e.getMessage());
         }
 
+        try {
         // Add owner member to group
         groupMemberService.addMemberToGroup(group, user, true, isDefault);
+        } catch (Exception e) {
+            throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "Failed to create group owner: " + e.getMessage());
+        }
 
         // Save user currency
         GroupCurrency groupCurrency = GroupCurrency.builder().group(group).currency(currency).isDefault(true).conversionRateToDefault(1).createdAt(LocalDateTime.now()).build();
         try {
             groupCurrencyRepository.save(groupCurrency);
         } catch (Exception e) {
-            throw new ApriseException(GlobalError.CREATE_USER_CURRENCY_FAILED, e.getMessage());
+            throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST,"Failed to create group currency: "+ e.getMessage());
         }
 
         return group;
