@@ -10,6 +10,7 @@ import in.aprise.finance.group.model.repository.GroupRepository;
 import in.aprise.finance.shared.exception.ApriseException;
 import in.aprise.finance.shared.exception.GlobalError;
 import in.aprise.finance.transaction.TransactionService;
+import in.aprise.finance.user.UserTestHelpers;
 import in.aprise.finance.user.model.User;
 import in.aprise.finance.user.model.UsersRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,19 +18,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 class GroupServiceTest {
 
+    @InjectMocks
     private GroupService serviceUnderTest;
 
     @MockBean GroupRepository groupRepository;
@@ -41,11 +43,11 @@ class GroupServiceTest {
 
     @BeforeEach
     void setUp() {
-        serviceUnderTest = new GroupService(groupRepository,groupCurrencyRepository,currenciesRepository,groupMemberService,userRepository,transactionService);
+        serviceUnderTest = spy(new GroupService(groupRepository, groupCurrencyRepository, currenciesRepository, groupMemberService, userRepository, transactionService));
     }
 
     @Test
-    void itShouldFailIfGroupCreationFails() {
+    void createGroupForUser_itShouldFailIfGroupCreationFails() {
         var errorMessage = "DB operation failed";
         // set mocks
         doThrow(new ApriseException(GlobalError.INTERNAL_SERVER_ERROR,errorMessage)).when(groupRepository).save(ArgumentMatchers.any(Group.class));
@@ -61,7 +63,7 @@ class GroupServiceTest {
     }
 
     @Test
-    void itShouldFailIfGroupOwnerCreationFails() {
+    void createGroupForUser_itShouldFailIfGroupOwnerCreationFails() {
         var errorMessage = "DB operation failed";
         // set mocks
         doThrow(new ApriseException(GlobalError.INTERNAL_SERVER_ERROR,errorMessage)).when(groupMemberService)
@@ -77,7 +79,7 @@ class GroupServiceTest {
     }
 
     @Test
-    void itShouldFailIfGroupCurrencyCreationFails() {
+    void createGroupForUser_itShouldFailIfGroupCurrencyCreationFails() {
         var errorMessage = "DB operation failed";
         // set mocks
         doThrow(new ApriseException(GlobalError.INTERNAL_SERVER_ERROR,errorMessage)).when(groupCurrencyRepository).save(ArgumentMatchers.any(GroupCurrency.class));
@@ -92,7 +94,7 @@ class GroupServiceTest {
     }
 
     @Test
-    void itShouldReturnSavedGroupOnSuccess() {
+    void createGroupForUser_itShouldReturnSavedGroupOnSuccess() {
         // prepare
         var groupOwner = GroupTestHelpers.createDefaultGroupMember();
         var expectedGroup = groupOwner.getGroup();
@@ -126,7 +128,18 @@ class GroupServiceTest {
     }
 
     @Test
-    void createDefaultGroupForUser() {
+    void createDefaultGroupForUser_itShouldPassCorrectDefaultParams() {
+        // prepare
+        var inpurUser = UserTestHelpers.createDefaultUser();
+        var inputCurrency = inpurUser.getDefaultCurrency();
+        var defaultGroupType = GroupType.PERSONAL;
+        var defaultGroupName = defaultGroupType.toString().toLowerCase() + " group";
+
+        // when
+        serviceUnderTest.createDefaultGroupForUser(inpurUser,inputCurrency);
+
+        // verify
+        verify(serviceUnderTest).createGroupForUser(inpurUser,inputCurrency,defaultGroupType,defaultGroupName, "Personal expenses", true);
     }
 
     @Test
