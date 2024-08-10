@@ -26,9 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -132,38 +130,21 @@ public class GroupService {
         }).toList();
     }
 
-    public GroupMember validateGroupExists(long groupId) {
+    public List<TransactionResponseDTO> getGroupTransactions(long groupId) {
         // get user token
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User validatedUser = (User) authentication.getPrincipal();
 
         // validate group exists
-        groupRepository.existsById(groupId);
-
-        // validate group membership
-        return groupMemberService.validateGroupMembership(groupId, validatedUser.getId());
-    }
-
-    public GroupResponseDTO getGroup(long groupId) {
-        Group group = (Group) getGroupObject(groupId).get("group");
-        return GroupResponseDTO.builder().id(group.getId()).name(group.getName()).currencies(group.getGroupCurrencies().stream().map(GroupCurrency::getCurrency).toList()).type(group.getType()).createdAt(group.getCreatedAt().toString()).build();
-    }
-
-    public Map<String, Object> getGroupObject(long groupId) {
-        GroupMember member = validateGroupExists(groupId);
-        // get group from id
-        Group group = groupRepository.findById(groupId).orElseThrow(() -> new ApriseException(GlobalError.GENERIC_RESOURCE_NOT_FOUND, "Invalid group id: " + groupId));
-        return new HashMap<>(Map.of("group", group, "member", member));
-    }
-
-    public List<TransactionResponseDTO> getGroupTransactions(long groupId) {
-        validateGroupExists(groupId);
+        if (!groupRepository.existsByIdAndUserId(groupId, validatedUser.getId())) {
+            throw new ApriseException(GlobalError.GENERIC_RESOURCE_NOT_FOUND, "Group with given ID");
+        }
         return transactionService.getAllTransactionsForGroup(groupId);
     }
 
     @Transactional
     public TransactionResponseDTO createTransaction(CreateTransactionDTO request, Long groupId) {
-        var groupObject = getGroupObject(groupId);
-        return transactionService.createTransaction(request, (Group) groupObject.get("group"), (GroupMember) groupObject.get("member"));
+        var groupMember = groupMemberService.getMemberDetailsForCurrentUserByGroupId(groupId);
+        return transactionService.createTransaction(request, groupMember.getGroup(), groupMember);
     }
 }
