@@ -14,7 +14,7 @@ public enum GlobalError {
     INTERNAL_SERVER_ERROR(
             500,
             ErrorCode.INTERNAL_SERVER_ERROR.getCode(),
-            "Internal server error while processing request",
+            "Internal server error while processing request: {0}",
             "Internal server error",
             ErrorType.INTERNAL_ERROR),
     AUTHENTICATION_ERROR(
@@ -35,12 +35,6 @@ public enum GlobalError {
             "Invalid currency",
             "Given currency id is invalid",
             ErrorType.BAD_REQUEST),
-    CREATE_USER_CURRENCY_FAILED(
-            400,
-            "AE-APP-4003",
-            "Create user failed",
-            "Create user currency failed",
-            ErrorType.INTERNAL_ERROR),
     GENERIC_BAD_REQUEST(
             400,
             ErrorCode.GENERIC_BAD_REQUEST.getCode(),
