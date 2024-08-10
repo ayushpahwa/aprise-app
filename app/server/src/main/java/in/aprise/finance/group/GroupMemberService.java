@@ -7,6 +7,8 @@ import in.aprise.finance.shared.exception.ApriseException;
 import in.aprise.finance.shared.exception.GlobalError;
 import in.aprise.finance.user.model.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,9 +27,16 @@ public class GroupMemberService {
         return groupMember;
     }
 
-    public GroupMember validateGroupMembership(long groupId, long user) {
+    public GroupMember getMemberDetailsByUserIdAndGroupId(long groupId, long user) {
         return groupMemberRepository
-                .findByGroupIdAndUserIdAndIsDeleted(groupId, user, false)
+                .findByGroupIdAndUserIdAndDeletedFlags(groupId, user)
                 .orElseThrow(() -> new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "User is not a member of the group"));
+    }
+
+    public GroupMember getMemberDetailsForCurrentUserByGroupId(long groupId) {
+        // get user token
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User validatedUser = (User) authentication.getPrincipal();
+        return getMemberDetailsByUserIdAndGroupId(groupId, validatedUser.getId());
     }
 }

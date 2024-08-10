@@ -21,9 +21,12 @@ class GroupMemberRepositoryTest {
     @Autowired
     private GroupMemberRepository repositoryUnderTest;
 
-    @Autowired private UsersRepository usersRepository;
-    @Autowired private GroupRepository groupRepository;
-    @Autowired private CurrencyRepository currencyRepository;
+    @Autowired
+    private UsersRepository usersRepository;
+    @Autowired
+    private GroupRepository groupRepository;
+    @Autowired
+    private CurrencyRepository currencyRepository;
 
     Group savedGroup;
     User savedUser;
@@ -52,10 +55,10 @@ class GroupMemberRepositoryTest {
         var fakeUserId = savedUser.getId() + 1L;
 
         // act: run the fetch function with fake user id
-        var fetchedGroupMemberRecord = repositoryUnderTest.findByGroupIdAndUserIdAndIsDeleted(savedGroup.getId(),fakeUserId,false);
+        var fetchedGroupMemberRecord = repositoryUnderTest.findByGroupIdAndUserIdAndDeletedFlags(savedGroup.getId(), fakeUserId);
 
         // assert
-        assert(fetchedGroupMemberRecord.isEmpty());
+        assert (fetchedGroupMemberRecord.isEmpty());
     }
 
     @Test
@@ -64,10 +67,10 @@ class GroupMemberRepositoryTest {
         var fakeGroupId = savedGroup.getId() + 1L;
 
         // act: run the fetch function with fake user id
-        var fetchedGroupMemberRecord = repositoryUnderTest.findByGroupIdAndUserIdAndIsDeleted(fakeGroupId,savedUser.getId(),false);
+        var fetchedGroupMemberRecord = repositoryUnderTest.findByGroupIdAndUserIdAndDeletedFlags(fakeGroupId, savedUser.getId());
 
         // assert
-        assert(fetchedGroupMemberRecord.isEmpty());
+        assert (fetchedGroupMemberRecord.isEmpty());
     }
 
     @Test
@@ -78,19 +81,19 @@ class GroupMemberRepositoryTest {
 
         // act: run the fetch function
         var fetchedGroupMemberRecord = repositoryUnderTest
-                .findByGroupIdAndUserIdAndIsDeleted(savedGroup.getId(),savedUser.getId(),false);
+                .findByGroupIdAndUserIdAndDeletedFlags(savedGroup.getId(), savedUser.getId());
 
         // assert
-        assert(fetchedGroupMemberRecord.isEmpty());
+        assert (fetchedGroupMemberRecord.isEmpty());
     }
 
     @Test
     void itShouldReturnEntryWithGroupMembership() {
         // act: run the fetch function
         var fetchedGroupMemberRecord = repositoryUnderTest
-                .findByGroupIdAndUserIdAndIsDeleted(savedGroup.getId(),savedUser.getId(),false);
+                .findByGroupIdAndUserIdAndDeletedFlags(savedGroup.getId(), savedUser.getId());
 
         // assert
-        assertEquals(savedGroupMember,fetchedGroupMemberRecord.orElseThrow());
+        assertEquals(savedGroupMember, fetchedGroupMemberRecord.orElseThrow());
     }
 }

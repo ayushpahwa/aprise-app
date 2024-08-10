@@ -40,7 +40,7 @@ class GroupMemberServiceTest {
                 .save(ArgumentMatchers.any());
 
         // when
-        ApriseException thrown = assertThrows(ApriseException.class,()-> {
+        ApriseException thrown = assertThrows(ApriseException.class, () -> {
             serviceUnderTest.addMemberToGroup(new Group(), new User(), true, true);
         });
 
@@ -68,17 +68,17 @@ class GroupMemberServiceTest {
     void itShouldThrowErrorIfDBOpReturnsEmpty() {
         // set mock
         when(groupMemberRepository
-                .findByGroupIdAndUserIdAndIsDeleted
-                        (ArgumentMatchers.any(Long.class),ArgumentMatchers.any(Long.class),ArgumentMatchers.any(Boolean.class)))
+                .findByGroupIdAndUserIdAndDeletedFlags
+                        (ArgumentMatchers.any(Long.class), ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.empty());
 
         // when
-        ApriseException thrown = assertThrows(ApriseException.class,()->{
-           serviceUnderTest.validateGroupMembership(1L,1L);
+        ApriseException thrown = assertThrows(ApriseException.class, () -> {
+            serviceUnderTest.getMemberDetailsByUserIdAndGroupId(1L, 1L);
         });
 
         // assert
-        assertEquals("Bad request: User is not a member of the group",thrown.getMessage());
+        assertEquals("Bad request: User is not a member of the group", thrown.getMessage());
     }
 
     @Test
@@ -86,15 +86,15 @@ class GroupMemberServiceTest {
         // prepare
         var groupMember = GroupTestHelpers.createDefaultGroupMember();
         when(groupMemberRepository
-                .findByGroupIdAndUserIdAndIsDeleted
-                        (ArgumentMatchers.any(Long.class),ArgumentMatchers.any(Long.class),ArgumentMatchers.any(Boolean.class)))
+                .findByGroupIdAndUserIdAndDeletedFlags
+                        (ArgumentMatchers.any(Long.class), ArgumentMatchers.any(Long.class)))
                 .thenReturn(Optional.of(groupMember));
 
         // when
-        var output = serviceUnderTest.validateGroupMembership(groupMember.getGroup().getId(),groupMember.getUser().getId());
+        var output = serviceUnderTest.getMemberDetailsByUserIdAndGroupId(groupMember.getGroup().getId(), groupMember.getUser().getId());
 
         // then
-        verify(groupMemberRepository).findByGroupIdAndUserIdAndIsDeleted(groupMember.getGroup().getId(),groupMember.getUser().getId(),false);
+        verify(groupMemberRepository).findByGroupIdAndUserIdAndDeletedFlags(groupMember.getGroup().getId(), groupMember.getUser().getId());
         assertEquals(groupMember, output);
     }
 }

@@ -59,7 +59,7 @@ public class TransactionMemberService {
     }
 
     public void createTransactionMember(TransactionMemberRequestDTO member, Transaction transaction, TransactionContributorType contributionType, float share) {
-        GroupMember groupMember = groupMemberService.validateGroupMembership(transaction.getGroup().getId(), member.getMemberId());
+        GroupMember groupMember = groupMemberService.getMemberDetailsByUserIdAndGroupId(transaction.getGroup().getId(), member.getMemberId());
         Account account = groupMember.getUser().getUserAccounts().get(0);
         TransactionMember transactionMember = TransactionMember.builder()
                 .transaction(transaction)
