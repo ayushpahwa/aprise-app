@@ -41,7 +41,7 @@ public class GroupService {
     private final TransactionService transactionService;
 
     @Transactional
-    public Group createGroupForUser(User user, Currency currency, GroupType groupType, String name, String description ,Boolean isDefault) {
+    public Group createGroupForUser(User user, Currency currency, GroupType groupType, String name, String description, Boolean isDefault) {
         Group group = Group.builder().type(groupType).name(name).description(description).createdAt(LocalDateTime.now()).build();
 
         try {
@@ -51,8 +51,8 @@ public class GroupService {
         }
 
         try {
-        // Add owner member to group
-        groupMemberService.addMemberToGroup(group, user, true, isDefault);
+            // Add owner member to group
+            groupMemberService.addMemberToGroup(group, user, true, isDefault);
         } catch (Exception e) {
             throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "Failed to create group owner: " + e.getMessage());
         }
@@ -62,7 +62,7 @@ public class GroupService {
         try {
             groupCurrencyRepository.save(groupCurrency);
         } catch (Exception e) {
-            throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST,"Failed to create group currency: "+ e.getMessage());
+            throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "Failed to create group currency: " + e.getMessage());
         }
 
         return group;
@@ -70,7 +70,7 @@ public class GroupService {
 
     @Transactional
     public void createDefaultGroupForUser(User user, Currency currency) {
-        createGroupForUser(user, currency, GroupType.PERSONAL, GroupType.PERSONAL.toString().toLowerCase() + " group","Personal expenses", true);
+        createGroupForUser(user, currency, GroupType.PERSONAL, GroupType.PERSONAL.toString().toLowerCase() + " group", "Personal expenses", true);
     }
 
     @Transactional
@@ -83,15 +83,24 @@ public class GroupService {
         var currency_id = request.getCurrencyId();
         var currency = currenciesRepository.findById(currency_id).orElseThrow(() -> new ApriseException(GlobalError.INVALID_CURRENCY));
 
-        // Create group
-        Group createdGroup = createGroupForUser(validatedUser, currency, request.getType(), request.getName(),request.getDescription(), false);
+        Group createdGroup;
+        try {
+            // Create group
+            createdGroup = createGroupForUser(validatedUser, currency, request.getType(), request.getName(), request.getDescription(), false);
+        } catch (Exception e) {
+            throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "Failed to create group: " + e.getMessage());
+        }
 
         // Add members to group
         request.getMembers().forEach(memberId -> {
             if (memberId == validatedUser.getId()) return; // skip if member is owner (current user)
             User member = userRepository.findById(memberId).orElseThrow(() -> new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "Invalid member id: " + memberId));
             member.setId(memberId);
-            groupMemberService.addMemberToGroup(createdGroup, member, false, false);
+            try {
+                groupMemberService.addMemberToGroup(createdGroup, member, false, false);
+            } catch (Exception e) {
+                throw new ApriseException(GlobalError.GENERIC_BAD_REQUEST, "Failed to create new group member: " + e.getMessage());
+            }
         });
 
         return GroupResponseDTO.builder().id(createdGroup.getId()).name(createdGroup.getName()).description(createdGroup.getDescription()).currencies(List.of(currency)).type(createdGroup.getType()).createdAt(createdGroup.getCreatedAt().toString()).build();
