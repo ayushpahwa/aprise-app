@@ -6,6 +6,7 @@ import in.aprise.finance.group.model.Group;
 import in.aprise.finance.group.model.GroupCurrency;
 import in.aprise.finance.group.model.GroupMember;
 import in.aprise.finance.group.model.GroupType;
+import in.aprise.finance.group.model.dtos.CreateTransactionDTO;
 import in.aprise.finance.group.model.repository.GroupCurrencyRepository;
 import in.aprise.finance.group.model.repository.GroupRepository;
 import in.aprise.finance.shared.exception.ApriseException;
@@ -407,18 +408,47 @@ class GroupServiceTest {
     }
 
     @Test
-    void getGroup() {
+    void createTransaction_itShouldThrowErrorIfMemberFetchFails() {
+        // set mocks
+        var errorMessage = "User is not a member of the group";
+        when(groupMemberService.getMemberDetailsForCurrentUserByGroupId(1L)).thenThrow(new ApriseException(GlobalError.GENERIC_BAD_REQUEST, errorMessage));
+
+        ApriseException thrown = assertThrows(ApriseException.class, () -> {
+            serviceUnderTest.createTransaction(new CreateTransactionDTO(), 1L);
+        });
+
+        // assert
+        assertEquals("Bad request: " + errorMessage, thrown.getMessage());
     }
 
     @Test
-    void getGroupObject() {
+    void createTransaction_itShouldThrowErrorIfTxnCreationFails() {
+        // set mocks
+        var groupMember = GroupTestHelpers.createDefaultGroupMember();
+        var errorMessage = "Failed to create transaction";
+        when(groupMemberService.getMemberDetailsForCurrentUserByGroupId(1L)).thenReturn(groupMember);
+        when(transactionService.createTransaction(any(CreateTransactionDTO.class), any(Group.class), any(GroupMember.class))).thenThrow(new ApriseException(GlobalError.GENERIC_BAD_REQUEST, errorMessage));
+
+        ApriseException thrown = assertThrows(ApriseException.class, () -> {
+            serviceUnderTest.createTransaction(new CreateTransactionDTO(), 1L);
+        });
+
+        // assert
+        assertEquals("Bad request: " + errorMessage, thrown.getMessage());
     }
 
     @Test
-    void getGroupTransactions() {
-    }
+    void createTransaction_itShouldReturnCreatedTxn() {
+        // set mocks
+        var groupMember = GroupTestHelpers.createDefaultGroupMember();
 
-    @Test
-    void createTransaction() {
+        var expectedResponse = new TransactionResponseDTO();
+        when(groupMemberService.getMemberDetailsForCurrentUserByGroupId(1L)).thenReturn(groupMember);
+        when(transactionService.createTransaction(any(CreateTransactionDTO.class), any(Group.class), any(GroupMember.class))).thenReturn(expectedResponse);
+
+        var response = serviceUnderTest.createTransaction(new CreateTransactionDTO(), 1L);
+
+        // assert
+        assertEquals(expectedResponse, response);
     }
 }
